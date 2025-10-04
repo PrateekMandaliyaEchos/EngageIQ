@@ -1,6 +1,6 @@
 app:
   name: EngageIQ
-  version: 1.0.0
+  version: 1.0.1
   environment: development # development, staging, production
   debug: true
 
@@ -12,12 +12,7 @@ api:
 
 data:
   sources:
-    agent_persona: "Agent Persona.csv"
-    discovery: "Discovery.csv"
-    infutor: "Infutor.csv"
-    policy_data: "Policy Data.csv"
-    complaints: "Complaints.csv"
-    survey_data: "Survey Data.csv"
+    agent_persona: "Agent_persona.csv"
     campaigns: "campaigns.csv"
   connector: csv # csv, s3, athena, postgresql, snowflake, bigquery
 

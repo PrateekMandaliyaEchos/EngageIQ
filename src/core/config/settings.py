@@ -2,7 +2,7 @@
 
 import os
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 import yaml
 from functools import lru_cache
 
@@ -75,7 +75,13 @@ class Settings:
 
     @property
     def debug(self) -> bool:
-        return self._config.get('app', {}).get('debug', False)
+        """Get debug mode setting."""
+        return bool(self._config.get('app', {}).get('debug', False))
+
+    @property
+    def cors_origins(self) -> List[str]:
+        """Get CORS allowed origins."""
+        return self._config.get('api', {}).get('cors_origins', ['http://localhost:3000'])
 
     # API settings
     @property
@@ -85,10 +91,6 @@ class Settings:
     @property
     def api_port(self) -> int:
         return self._config.get('api', {}).get('port', 8000)
-
-    @property
-    def cors_origins(self) -> list:
-        return self._config.get('api', {}).get('cors_origins', [])
 
     # Data settings
     @property

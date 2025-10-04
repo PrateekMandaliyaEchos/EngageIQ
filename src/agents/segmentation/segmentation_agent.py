@@ -53,14 +53,13 @@ class SegmentationAgent(BaseAgent):
                 raise ValueError("No valid agent data provided for segmentation")
             
             # Get the actual DataFrame from DataLoader cache
-            # For now, we'll need to reload the data since we're not passing the full DataFrame
             from src.agents.data_loader import DataLoaderAgent
             data_loader = DataLoaderAgent({})
             data_result = data_loader.process(
                 Message(
                     sender=self.name,
                     recipient="DataLoader",
-                    content={"include_additional": False},  # Only need agent_persona
+                    content={},  # Load unified dataset
                     message_type="load_data"
                 )
             )
@@ -68,8 +67,12 @@ class SegmentationAgent(BaseAgent):
             if not data_result.get('success'):
                 raise ValueError(f"Failed to load agent data: {data_result.get('error')}")
             
-            # Convert back to DataFrame for filtering
-            agent_df = self._convert_to_dataframe(data_result['metadata']['sample_data'])
+            # Get the full dataset from the DataLoader's cache
+            if hasattr(data_loader, 'data_cache') and 'agent_persona' in data_loader.data_cache:
+                agent_df = data_loader.data_cache['agent_persona']
+            else:
+                # Fallback to sample data if full dataset not available in cache
+                agent_df = self._convert_to_dataframe(data_result['metadata']['sample_data'])
             
             # Apply segmentation criteria
             filtered_agents = self._apply_criteria(agent_df, criteria)
@@ -89,7 +92,7 @@ class SegmentationAgent(BaseAgent):
             
             return {
                 "success": True,
-                "total_agents": int(len(agent_df)),
+                "total_agents": int(len(agent_df)),  # This will now be the full dataset size
                 "filtered_agents": int(len(filtered_agents)),
                 "agent_ids": agent_ids,
                 "criteria_applied": criteria,

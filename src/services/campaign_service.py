@@ -3,12 +3,32 @@
 import json
 import pandas as pd
 import uuid
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from datetime import datetime
 from pathlib import Path
 
 from src.agents import OrchestratorAgent, Message
 from src.core.config import get_settings
+
+
+def _serialize_dataframes(obj: Any) -> Any:
+    """
+    Recursively convert any Pandas DataFrames in the object to dictionaries.
+    
+    Args:
+        obj: Object that may contain DataFrames
+        
+    Returns:
+        Object with DataFrames converted to dictionaries
+    """
+    if isinstance(obj, pd.DataFrame):
+        return obj.to_dict('records')
+    elif isinstance(obj, dict):
+        return {key: _serialize_dataframes(value) for key, value in obj.items()}
+    elif isinstance(obj, list):
+        return [_serialize_dataframes(item) for item in obj]
+    else:
+        return obj
 
 
 class CampaignService:
@@ -23,8 +43,15 @@ class CampaignService:
 
     def __init__(self):
         """Initialize campaign service."""
+        settings = get_settings()
         self.orchestrator = OrchestratorAgent(config={})
-        self._campaigns_file = Path(get_settings().data.connectors.csv.location) / get_settings().data.sources.campaigns
+        
+        # Get the path components from configuration
+        data_location = settings._config.get('connectors', {}).get('csv', {}).get('location', './data')
+        campaigns_file = settings._config.get('data', {}).get('sources', {}).get('campaigns', 'campaigns.csv')
+        
+        # Construct the full path
+        self._campaigns_file = Path(data_location) / campaigns_file
         self._required_fields = ['campaign_id', 'name', 'goal', 'target_criteria', 'segment_size', 'created_at', 'status']
 
     def _generate_campaign_id(self) -> str:
@@ -40,6 +67,61 @@ class CampaignService:
             new_id = f"CAM{str(uuid.uuid4())[:6].upper()}"
             if new_id not in existing_ids:
                 return new_id
+
+    def _generate_campaign_name(self, goal: str) -> str:
+        """
+        Generate an intelligent campaign name based on the goal.
+        
+        Args:
+            goal: The campaign goal text
+            
+        Returns:
+            Generated campaign name
+        """
+        # Extract key terms from the goal for naming
+        goal_lower = goal.lower()
+        
+        # Define patterns and their corresponding campaign name components
+        patterns = {
+            'retention': ['retention', 'retain', 'keep', 'maintain'],
+            'acquisition': ['acquisition', 'acquire', 'new', 'recruit', 'find'],
+            'upsell': ['upsell', 'upgrade', 'premium', 'enhance', 'expand'],
+            'winback': ['winback', 'win back', 're-engage', 'reactivate'],
+            'growth': ['growth', 'grow', 'increase', 'boost', 'improve'],
+            'high-value': ['high-value', 'high value', 'premium', 'vip', 'elite'],
+            'satisfaction': ['satisfaction', 'nps', 'happy', 'satisfied'],
+            'performance': ['performance', 'sales', 'policies', 'productivity'],
+            'q4': ['q4', 'quarter 4', 'fourth quarter'],
+            'q3': ['q3', 'quarter 3', 'third quarter'],
+            'q2': ['q2', 'quarter 2', 'second quarter'],
+            'q1': ['q1', 'quarter 1', 'first quarter']
+        }
+        
+        # Extract relevant terms
+        detected_terms = []
+        for term_type, keywords in patterns.items():
+            if any(keyword in goal_lower for keyword in keywords):
+                detected_terms.append(term_type)
+        
+        # Generate name based on detected terms
+        if detected_terms:
+            # Use the most relevant terms
+            primary_term = detected_terms[0].title()
+            secondary_term = detected_terms[1] if len(detected_terms) > 1 else ""
+            
+            if secondary_term:
+                name = f"{primary_term} {secondary_term.title()} Campaign"
+            else:
+                name = f"{primary_term} Campaign"
+        else:
+            # Fallback to a generic name with date
+            name = f"Marketing Campaign {datetime.now().strftime('%Y-%m-%d')}"
+        
+        # Add context if it's about agents
+        if 'agent' in goal_lower:
+            name = f"Agent {name}"
+        
+        return name
 
     def _persist_campaign(self, campaign_data: Dict[str, Any]) -> None:
         """
@@ -82,12 +164,29 @@ class CampaignService:
             >>> campaigns = service.get_all_campaigns()
             >>> print(f"Found {len(campaigns)} campaigns")
         """
-        settings = get_settings()
-        campaigns_file = f"{settings.data.connectors.csv.location}/{settings.data.sources.campaigns}"
-        
         try:
-            # Read campaigns CSV
-            df = pd.read_csv(campaigns_file)
+            # Read campaigns CSV from the instance path
+            if not self._campaigns_file.exists():
+                return []
+                
+            # Read campaigns CSV with error handling
+            try:
+                df = pd.read_csv(
+                    self._campaigns_file,
+                    delimiter=',',
+                    quotechar='"',
+                    escapechar='\\',
+                    on_bad_lines='skip'  # Skip malformed lines instead of failing
+                )
+            except Exception as csv_error:
+                # If pandas fails, try with more lenient settings
+                df = pd.read_csv(
+                    self._campaigns_file,
+                    delimiter=',',
+                    quotechar='"',
+                    on_bad_lines='skip',
+                    engine='python'  # Use Python engine for better error handling
+                )
             
             # Convert DataFrame to list of dicts
             campaigns = df.to_dict('records')
@@ -97,16 +196,20 @@ class CampaignService:
                 if isinstance(campaign['target_criteria'], str):
                     campaign['target_criteria'] = json.loads(campaign['target_criteria'])
             
+            # Serialize any DataFrames to prevent Pydantic serialization errors
+            campaigns = _serialize_dataframes(campaigns)
+            
             return campaigns
         except Exception as e:
             raise Exception(f"Error reading campaigns: {str(e)}")
 
-    def create_campaign(self, goal: str) -> Dict[str, Any]:
+    def create_campaign(self, goal: str, campaign_name: Optional[str] = None) -> Dict[str, Any]:
         """
         Create a new campaign from user goal and persist it.
 
         Args:
             goal: Natural language campaign goal
+            campaign_name: Optional custom campaign name. If not provided, will be generated.
 
         Returns:
             Campaign creation result with plan and results
@@ -114,12 +217,18 @@ class CampaignService:
         Example:
             >>> service = CampaignService()
             >>> result = service.create_campaign(
-            ...     goal="Find high-value agents with excellent satisfaction"
+            ...     goal="Find high-value agents with excellent satisfaction",
+            ...     campaign_name="VIP Retention Campaign"
             ... )
             >>> print(result['success'])
+            >>> print(result['campaign_name'])
             >>> print(result['plan'])
             >>> print(result['results'])
         """
+        # Generate campaign name if not provided
+        if not campaign_name or campaign_name.strip() == "":
+            campaign_name = self._generate_campaign_name(goal)
+
         # Create message for orchestrator
         message = Message(
             sender="CampaignService",
@@ -133,13 +242,14 @@ class CampaignService:
         
         if result.get('success'):
             # Prepare campaign data for persistence
+            created_at = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
             campaign_data = {
                 'campaign_id': self._generate_campaign_id(),
-                'name': result.get('name', f"Campaign {datetime.now().strftime('%Y-%m-%d')}"),
+                'name': campaign_name,
                 'goal': goal,
                 'target_criteria': result.get('results', {}).get('criteria', {}),
                 'segment_size': result.get('results', {}).get('segment_size', 0),
-                'created_at': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
+                'created_at': created_at,
                 'status': 'completed' if result.get('success') else 'failed'
             }
             
@@ -148,5 +258,12 @@ class CampaignService:
                 result['campaign_id'] = campaign_data['campaign_id']
             except Exception as e:
                 result['warning'] = f"Campaign created but persistence failed: {str(e)}"
+        
+        # Add campaign name and created_at to result
+        result['campaign_name'] = campaign_name
+        result['created_at'] = created_at if result.get('success') else datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
+        
+        # Serialize any DataFrames in the result to prevent Pydantic serialization errors
+        result = _serialize_dataframes(result)
         
         return result

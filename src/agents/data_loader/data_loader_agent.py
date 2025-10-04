@@ -10,12 +10,15 @@ from src.core.config import get_settings
 
 class DataLoaderAgent(BaseAgent):
     """
-    Data Loader Agent that loads insurance agent population data.
+    Data Loader Agent that loads unified insurance agent population data.
     
     Responsibilities:
-    1. Load CSV files from configured data sources
-    2. Return structured DataFrame or dict of agent records
+    1. Load the unified Agent_persona.csv file (contains all agent data)
+    2. Return structured DataFrame with complete agent records
     3. Handle data validation and error cases
+    
+    Note: All previously separate data sources (complaints, discovery, infutor, 
+    policy data, survey data) are now unified in the single Agent_persona.csv file.
     """
 
     def __init__(self, config: Dict[str, Any]):
@@ -34,22 +37,17 @@ class DataLoaderAgent(BaseAgent):
         
     def process(self, message: Message) -> Dict[str, Any]:
         """
-        Load agent data from CSV files.
+        Load agent data from the unified Agent_persona.csv file.
         
         Args:
-            message: Message containing data source preferences
+            message: Message containing data source preferences (include_additional is ignored)
             
         Returns:
             Dictionary with loaded data and metadata
         """
         try:
-            # Load primary agent persona data
+            # Load unified agent persona data (now contains all previously separate data)
             agent_data = self._load_agent_persona_data()
-            
-            # Load additional data sources if requested
-            additional_data = {}
-            if message.content.get('include_additional', True):
-                additional_data = self._load_additional_data()
             
             # Clean sample data for JSON serialization
             sample_data = []
@@ -59,13 +57,13 @@ class DataLoaderAgent(BaseAgent):
             
             return {
                 "success": True,
-                "agent_data": "Data loaded successfully",  # Just confirmation, not full data
-                "additional_data": f"Loaded {len(additional_data)} additional sources",
+                "agent_data": "Unified dataset loaded successfully",
                 "metadata": {
                     "total_agents": len(agent_data),
-                    "data_sources_loaded": list(additional_data.keys()) + ['agent_persona'],
+                    "data_sources_loaded": ['agent_persona_unified'],
                     "columns": list(agent_data.columns) if isinstance(agent_data, pd.DataFrame) else [],
-                    "sample_data": sample_data
+                    "sample_data": sample_data,
+                    "note": "All data (complaints, discovery, infutor, policy, survey) now unified in Agent_persona.csv"
                 }
             }
             
@@ -73,16 +71,23 @@ class DataLoaderAgent(BaseAgent):
             return {
                 "success": False,
                 "error": f"Data loading failed: {str(e)}",
-                "agent_data": None,
-                "additional_data": {}
+                "agent_data": None
             }
     
     def _load_agent_persona_data(self) -> pd.DataFrame:
         """
-        Load the main agent persona CSV file.
+        Load the unified agent persona CSV file containing all agent data.
+        
+        This file now includes all previously separate data sources:
+        - Agent persona information
+        - Complaints data
+        - Discovery data
+        - Infutor data
+        - Policy data
+        - Survey data
         
         Returns:
-            DataFrame with agent data
+            DataFrame with complete unified agent data
         """
         # Get data path from config
         data_sources = self.settings.data_sources
@@ -90,7 +95,7 @@ class DataLoaderAgent(BaseAgent):
         data_path = Path(csv_config.get('location', './data'))
         
         # Handle the actual filename with spaces
-        agent_file = data_path / "Agent Persona.csv"
+        agent_file = data_path / "Agent_persona.csv"
         
         if not agent_file.exists():
             raise FileNotFoundError(f"Agent persona file not found: {agent_file}")
@@ -108,40 +113,6 @@ class DataLoaderAgent(BaseAgent):
         
         return df
     
-    def _load_additional_data(self) -> Dict[str, pd.DataFrame]:
-        """
-        Load additional data sources (complaints, discovery, etc.).
-        
-        Returns:
-            Dictionary mapping source names to DataFrames
-        """
-        additional_data = {}
-        data_sources = self.settings.data_sources
-        csv_config = self.settings.get_connector_config('csv')
-        data_path = Path(csv_config.get('location', './data'))
-        
-        # Skip agent_persona as it's loaded separately
-        additional_sources = {k: v for k, v in data_sources.items() if k != 'agent_persona'}
-        
-        for source_name, filename in additional_sources.items():
-            try:
-                file_path = data_path / filename
-                if file_path.exists():
-                    df = pd.read_csv(
-                        file_path,
-                        delimiter=csv_config.get('delimiter', ','),
-                        encoding=csv_config.get('encoding', 'utf-8'),
-                        skiprows=csv_config.get('skip_rows', 0)
-                    )
-                    additional_data[source_name] = df
-                    self.data_cache[source_name] = df
-                else:
-                    print(f"Warning: {source_name} file not found: {file_path}")
-                    
-            except Exception as e:
-                print(f"Warning: Failed to load {source_name}: {str(e)}")
-                
-        return additional_data
     
     def get_data_summary(self) -> Dict[str, Any]:
         """
