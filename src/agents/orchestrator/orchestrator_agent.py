@@ -5,6 +5,7 @@ from datetime import datetime
 
 from src.agents.base_agent import BaseAgent, Message
 from src.core.config import get_settings
+from src.core.planner import CampaignPlanner, PlanStep, CampaignPlan
 
 
 class Todo:
@@ -40,9 +41,9 @@ class OrchestratorAgent(BaseAgent):
     Orchestrator agent that coordinates campaign creation workflow.
 
     Responsibilities:
-    1. Create execution plan (todos) from user goal
+    1. Execute plans from CampaignPlanner
     2. Delegate tasks to specialized sub-agents
-    3. Track progress and update todo status
+    3. Track progress via CampaignPlanner
     4. Compile and return final results
     """
 
@@ -57,7 +58,10 @@ class OrchestratorAgent(BaseAgent):
         agent_config = settings.get_agent_config('orchestrator')
         super().__init__("Orchestrator", agent_config)
 
-        # Sub-agents (will be added incrementally)
+        # Get planner singleton
+        self.planner = CampaignPlanner.get_instance()
+
+        # Sub-agents
         from src.agents.goal_parser import GoalParserAgent
         from src.agents.data_loader import DataLoaderAgent
         from src.agents.segmentation import SegmentationAgent
@@ -69,48 +73,25 @@ class OrchestratorAgent(BaseAgent):
         self.profile_generator = ProfileGeneratorAgent(config)
         self.campaign_strategist = CampaignStrategistAgent(config)
 
-        self.current_plan: List[Todo] = []
-
     def process(self, message: Message) -> Dict[str, Any]:
         """
-        Process campaign creation request.
+        Execute plan from CampaignPlanner.
 
         Args:
-            message: Message containing user goal
+            message: Message containing campaign_id
 
         Returns:
-            Campaign creation results with plan and outputs
+            Execution results
         """
-        user_goal = message.content.get('goal', '')
+        campaign_id = message.content.get('campaign_id')
 
-        if not user_goal:
+        if not campaign_id:
             return {
                 "success": False,
-                "error": "No campaign goal provided"
+                "error": "No campaign_id provided in message"
             }
 
-        try:
-            # Phase 1: Create execution plan
-            plan = self._create_plan(user_goal)
-            self.current_plan = plan
-
-            # Phase 2: Execute plan
-            results = self._execute_plan(plan, user_goal)
-
-            return {
-                "success": True,
-                "goal": user_goal,
-                "plan": [todo.to_dict() for todo in plan],
-                "results": results
-            }
-
-        except Exception as e:
-            return {
-                "success": False,
-                "goal": user_goal,
-                "error": str(e),
-                "plan": [todo.to_dict() for todo in self.current_plan] if self.current_plan else []
-            }
+        return self._execute_existing_plan(campaign_id)
 
     def _create_plan(self, goal: str) -> List[Todo]:
         """
@@ -418,3 +399,174 @@ class OrchestratorAgent(BaseAgent):
             List of todo dictionaries with status
         """
         return [todo.to_dict() for todo in self.current_plan]
+
+    def _execute_existing_plan(self, campaign_id: str) -> Dict[str, Any]:
+        """
+        Execute plan from CampaignPlanner.
+
+        Args:
+            campaign_id: Campaign identifier
+
+        Returns:
+            Execution results
+        """
+        # Get plan from planner
+        campaign_plan = self.planner.get_plan(campaign_id)
+
+        if not campaign_plan:
+            return {
+                "success": False,
+                "error": f"No plan found for campaign {campaign_id}"
+            }
+
+        try:
+            # Execute each step sequentially
+            for step in campaign_plan.steps:
+                try:
+                    # Update to in_progress
+                    self.planner.update_step_status(
+                        campaign_id,
+                        step.step,
+                        "in_progress"
+                    )
+
+                    # Execute the step
+                    result = self._execute_single_step(step, campaign_plan)
+
+                    # Update to completed with result
+                    self.planner.update_step_status(
+                        campaign_id,
+                        step.step,
+                        "completed",
+                        result=result
+                    )
+
+                except Exception as step_error:
+                    # Mark step as failed
+                    self.planner.update_step_status(
+                        campaign_id,
+                        step.step,
+                        "failed",
+                        error=str(step_error)
+                    )
+                    raise
+
+            # All steps completed - mark plan as completed
+            self.planner.update_plan_status(campaign_id, "completed")
+
+            # Return results
+            return self.planner.get_plan_status(campaign_id)
+
+        except Exception as e:
+            # Plan execution failed
+            self.planner.update_plan_status(campaign_id, "failed", error=str(e))
+            return {
+                "success": False,
+                "campaign_id": campaign_id,
+                "error": str(e),
+                "plan": self.planner.get_plan_status(campaign_id)
+            }
+
+    def _execute_single_step(self, step: PlanStep, campaign_plan: CampaignPlan) -> Dict[str, Any]:
+        """
+        Execute a single step from the plan.
+
+        Args:
+            step: Plan step to execute
+            campaign_plan: Full campaign plan (for context)
+
+        Returns:
+            Step execution result
+        """
+        goal = campaign_plan.goal
+        results = campaign_plan.results  # Accumulated results from previous steps
+
+        # Route to appropriate agent based on step.agent_name
+        if step.agent_name == "GoalParser":
+            return self._execute_goal_parser_step(goal)
+
+        elif step.agent_name == "DataLoader":
+            return self._execute_data_loader_step()
+
+        elif step.agent_name == "SegmentationAgent":
+            return self._execute_segmentation_step(results)
+
+        elif step.agent_name == "ProfileGeneratorAgent":
+            return self._execute_profile_generator_step(results)
+
+        elif step.agent_name == "CampaignStrategistAgent":
+            return self._execute_campaign_strategist_step(results, goal)
+
+        else:
+            raise ValueError(f"Unknown agent: {step.agent_name}")
+
+    def _execute_goal_parser_step(self, goal: str) -> Dict[str, Any]:
+        """Execute GoalParser step."""
+        criteria = self.goal_parser.process(
+            Message(
+                sender=self.name,
+                recipient="GoalParser",
+                content={"goal": goal},
+                message_type="parse_request"
+            )
+        )
+        return {"criteria": criteria}
+
+    def _execute_data_loader_step(self) -> Dict[str, Any]:
+        """Execute DataLoader step."""
+        data_result = self.data_loader.process(
+            Message(
+                sender=self.name,
+                recipient="DataLoader",
+                content={},
+                message_type="load_data"
+            )
+        )
+        return {"agent_data": data_result}
+
+    def _execute_segmentation_step(self, results: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute SegmentationAgent step."""
+        segmentation_result = self.segmentation.process(
+            Message(
+                sender=self.name,
+                recipient="SegmentationAgent",
+                content={
+                    "criteria": results.get('GoalParser', {}).get('criteria', {}),
+                    "agent_data": results.get('DataLoader', {}).get('agent_data', {})
+                },
+                message_type="segment_request"
+            )
+        )
+        return {"segmentation": segmentation_result}
+
+    def _execute_profile_generator_step(self, results: Dict[str, Any]) -> Dict[str, Any]:
+        """Execute ProfileGeneratorAgent step."""
+        profile_result = self.profile_generator.process(
+            Message(
+                sender=self.name,
+                recipient="ProfileGeneratorAgent",
+                content={
+                    "segmentation": results.get('SegmentationAgent', {}).get('segmentation', {}),
+                    "agent_data": results.get('DataLoader', {}).get('agent_data', {}),
+                    "criteria": results.get('GoalParser', {}).get('criteria', {})
+                },
+                message_type="profile_request"
+            )
+        )
+        return {"profiles": profile_result}
+
+    def _execute_campaign_strategist_step(self, results: Dict[str, Any], goal: str) -> Dict[str, Any]:
+        """Execute CampaignStrategistAgent step."""
+        strategy_result = self.campaign_strategist.process(
+            Message(
+                sender=self.name,
+                recipient="CampaignStrategistAgent",
+                content={
+                    "profiles": results.get('ProfileGeneratorAgent', {}).get('profiles', {}),
+                    "goal": goal,
+                    "criteria": results.get('GoalParser', {}).get('criteria', {})
+                },
+                message_type="strategy_request"
+            )
+        )
+        return {"strategy": strategy_result}

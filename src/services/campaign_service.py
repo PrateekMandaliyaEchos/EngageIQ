@@ -6,9 +6,11 @@ import uuid
 from typing import Dict, Any, List, Optional
 from datetime import datetime
 from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor
 
 from src.agents import OrchestratorAgent, Message
 from src.core.config import get_settings
+from src.core.planner import CampaignPlanner
 
 
 def _serialize_dataframes(obj: Any) -> Any:
@@ -37,36 +39,31 @@ class CampaignService:
 
     Responsibilities:
     - Accept campaign creation requests
-    - Orchestrate multi-agent workflow
+    - Create execution plans via CampaignPlanner
+    - Orchestrate multi-agent workflow asynchronously
     - Return structured results
     """
 
     def __init__(self):
         """Initialize campaign service."""
         settings = get_settings()
+
+        # Get planner singleton
+        self.planner = CampaignPlanner.get_instance()
+
+        # Initialize orchestrator
         self.orchestrator = OrchestratorAgent(config={})
-        
+
+        # Thread pool for async execution
+        self.executor = ThreadPoolExecutor(max_workers=5)
+
         # Get the path components from configuration
         data_location = settings._config.get('connectors', {}).get('csv', {}).get('location', './data')
         campaigns_file = settings._config.get('data', {}).get('sources', {}).get('campaigns', 'campaigns.csv')
-        
+
         # Construct the full path
         self._campaigns_file = Path(data_location) / campaigns_file
         self._required_fields = ['campaign_id', 'name', 'goal', 'target_criteria', 'segment_size', 'created_at', 'status']
-
-    def _generate_campaign_id(self) -> str:
-        """Generate a unique campaign ID."""
-        # Get existing campaign IDs
-        existing_ids = set()
-        if self._campaigns_file.exists():
-            df = pd.read_csv(self._campaigns_file)
-            existing_ids = set(df['campaign_id'].values)
-        
-        # Generate new ID until we find an unused one
-        while True:
-            new_id = f"CAM{str(uuid.uuid4())[:6].upper()}"
-            if new_id not in existing_ids:
-                return new_id
 
     def _generate_campaign_name(self, goal: str) -> str:
         """
@@ -176,7 +173,8 @@ class CampaignService:
                     delimiter=',',
                     quotechar='"',
                     escapechar='\\',
-                    on_bad_lines='skip'  # Skip malformed lines instead of failing
+                    on_bad_lines='skip',  # Skip malformed lines instead of failing
+                    low_memory=False
                 )
             except Exception as csv_error:
                 # If pandas fails, try with more lenient settings
@@ -185,7 +183,8 @@ class CampaignService:
                     delimiter=',',
                     quotechar='"',
                     on_bad_lines='skip',
-                    engine='python'  # Use Python engine for better error handling
+                    engine='python',  # Use Python engine for better error handling
+                    low_memory=False
                 )
             
             # Convert DataFrame to list of dicts
@@ -205,14 +204,14 @@ class CampaignService:
 
     def create_campaign(self, goal: str, campaign_name: Optional[str] = None) -> Dict[str, Any]:
         """
-        Create a new campaign from user goal and persist it.
+        Create a new campaign plan and start execution asynchronously.
 
         Args:
             goal: Natural language campaign goal
             campaign_name: Optional custom campaign name. If not provided, will be generated.
 
         Returns:
-            Campaign creation result with plan and results
+            Campaign creation response with campaign_id and plan (execution starts in background)
 
         Example:
             >>> service = CampaignService()
@@ -220,50 +219,85 @@ class CampaignService:
             ...     goal="Find high-value agents with excellent satisfaction",
             ...     campaign_name="VIP Retention Campaign"
             ... )
-            >>> print(result['success'])
-            >>> print(result['campaign_name'])
-            >>> print(result['plan'])
-            >>> print(result['results'])
+            >>> print(result['campaign_id'])  # Returns immediately
+            >>> print(result['status'])        # 'pending'
         """
         # Generate campaign name if not provided
         if not campaign_name or campaign_name.strip() == "":
             campaign_name = self._generate_campaign_name(goal)
 
-        # Create message for orchestrator
-        message = Message(
-            sender="CampaignService",
-            recipient="Orchestrator",
-            content={"goal": goal},
-            message_type="create_campaign"
-        )
+        # Create plan via CampaignPlanner
+        campaign_id, plan = self.planner.create_plan(goal, campaign_name)
 
-        # Execute orchestration and get results
-        result = self.orchestrator.process(message)
-        
-        if result.get('success'):
-            # Prepare campaign data for persistence
-            created_at = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
-            campaign_data = {
-                'campaign_id': self._generate_campaign_id(),
-                'name': campaign_name,
-                'goal': goal,
-                'target_criteria': result.get('results', {}).get('criteria', {}),
-                'segment_size': result.get('results', {}).get('segment_size', 0),
-                'created_at': created_at,
-                'status': 'planned' if result.get('success') else 'failed'
-            }
-            
-            try:
-                self._persist_campaign(campaign_data)
-                result['campaign_id'] = campaign_data['campaign_id']
-            except Exception as e:
-                result['warning'] = f"Campaign created but persistence failed: {str(e)}"
-        
-        # Add campaign name and created_at to result
-        result['campaign_name'] = campaign_name
-        result['created_at'] = created_at if result.get('success') else datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
-        
-        # Serialize any DataFrames in the result to prevent Pydantic serialization errors
-        result = _serialize_dataframes(result)
-        
-        return result
+        # Start async execution in background
+        self.executor.submit(self._execute_campaign_async, campaign_id)
+
+        # Return immediately with campaign_id and pending status
+        return {
+            "success": True,
+            "campaign_id": campaign_id,
+            "campaign_name": campaign_name,
+            "goal": goal,
+            "status": "pending",
+            "created_at": plan.created_at.isoformat(),
+            "plan": [step.to_dict() for step in plan.steps],
+            "message": "Campaign execution started in background"
+        }
+
+    def _execute_campaign_async(self, campaign_id: str) -> None:
+        """
+        Execute campaign in background (called by ThreadPoolExecutor).
+
+        Args:
+            campaign_id: Campaign identifier
+        """
+        try:
+            # Update plan status to executing
+            self.planner.update_plan_status(campaign_id, "executing")
+
+            # Create message for orchestrator with campaign_id
+            message = Message(
+                sender="CampaignService",
+                recipient="Orchestrator",
+                content={"campaign_id": campaign_id},
+                message_type="execute_plan"
+            )
+
+            # Execute via orchestrator (respects BaseAgent interface)
+            result = self.orchestrator.process(message)
+
+            # If successful, persist campaign to CSV
+            if result.get('success'):
+                plan = self.planner.get_plan(campaign_id)
+                if plan:
+                    campaign_data = {
+                        'campaign_id': campaign_id,
+                        'name': plan.campaign_name,
+                        'goal': plan.goal,
+                        'target_criteria': plan.results.get('GoalParser', {}).get('criteria', {}),
+                        'segment_size': plan.results.get('SegmentationAgent', {}).get('segmentation', {}).get('filtered_agents', 0),
+                        'created_at': plan.created_at.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                        'status': 'planned'
+                    }
+
+                    try:
+                        self._persist_campaign(campaign_data)
+                    except Exception as e:
+                        print(f"Warning: Campaign execution succeeded but persistence failed: {str(e)}")
+
+        except Exception as e:
+            # Mark plan as failed
+            self.planner.update_plan_status(campaign_id, "failed", error=str(e))
+            print(f"Campaign {campaign_id} execution failed: {str(e)}")
+
+    def get_campaign_status(self, campaign_id: str) -> Dict[str, Any]:
+        """
+        Get current execution status of a campaign.
+
+        Args:
+            campaign_id: Campaign identifier
+
+        Returns:
+            Campaign status with plan details
+        """
+        return self.planner.get_plan_status(campaign_id)

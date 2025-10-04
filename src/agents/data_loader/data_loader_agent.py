@@ -105,7 +105,8 @@ class DataLoaderAgent(BaseAgent):
             agent_file,
             delimiter=csv_config.get('delimiter', ','),
             encoding=csv_config.get('encoding', 'utf-8'),
-            skiprows=csv_config.get('skip_rows', 0)
+            skiprows=csv_config.get('skip_rows', 0),
+            low_memory=False
         )
         
         # Cache the data
