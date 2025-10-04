@@ -250,7 +250,7 @@ class CampaignService:
                 'target_criteria': result.get('results', {}).get('criteria', {}),
                 'segment_size': result.get('results', {}).get('segment_size', 0),
                 'created_at': created_at,
-                'status': 'completed' if result.get('success') else 'failed'
+                'status': 'planned' if result.get('success') else 'failed'
             }
             
             try:

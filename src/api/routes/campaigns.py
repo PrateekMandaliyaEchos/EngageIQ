@@ -51,6 +51,7 @@ class TodoItem(BaseModel):
 class CampaignResponse(BaseModel):
     """Response model for campaign creation."""
     success: bool
+    campaign_id: str
     goal: str
     campaign_name: str
     created_at: str
@@ -141,6 +142,7 @@ async def create_campaign(request: CampaignRequest) -> CampaignResponse:
         # Convert to CampaignResponse format
         return CampaignResponse(
             success=result.get('success', False),
+            campaign_id=result.get('campaign_id', ''),
             goal=result.get('goal', request.goal),
             campaign_name=result.get('campaign_name', 'Unnamed Campaign'),
             created_at=result.get('created_at', ''),
