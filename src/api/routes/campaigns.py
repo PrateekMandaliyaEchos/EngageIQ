@@ -1,13 +1,25 @@
-"""Campaign creation endpoints."""
+"""Campaign management endpoints."""
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from typing import Dict, Any, List, Optional
+from datetime import datetime
 
 from src.services import CampaignService
 
 router = APIRouter()
 campaign_service = CampaignService()
+
+
+class Campaign(BaseModel):
+    """Response model for campaign details."""
+    campaign_id: str
+    name: str
+    goal: str
+    target_criteria: Dict[str, Any]
+    segment_size: int
+    created_at: str
+    status: str
 
 
 class CampaignRequest(BaseModel):
@@ -40,62 +52,48 @@ class CampaignResponse(BaseModel):
     error: Optional[str] = None
 
 
-@router.post("/campaigns/create", response_model=CampaignResponse)
-async def create_campaign(request: CampaignRequest):
+@router.get("/all", response_model=List[Campaign])
+async def get_all_campaigns() -> List[Campaign]:
     """
-    Create a new campaign from natural language goal.
+    Get all existing campaigns.
 
-    This endpoint:
-    1. Accepts a natural language campaign goal
-    2. Orchestrates multi-agent workflow
-    3. Returns execution plan and results
-
-    Example Request:
-    ```json
-    {
-        "goal": "Find high-value agents with excellent satisfaction for VIP retention"
-    }
-    ```
+    Returns:
+        List of all campaigns with their details
 
     Example Response:
     ```json
-    {
-        "success": true,
-        "goal": "Find high-value agents...",
-        "plan": [
-            {
-                "step": 1,
-                "description": "Parse campaign goal and extract criteria",
-                "agent": "GoalParser",
-                "status": "completed",
-                "active_form": "Parsing campaign goal"
-            }
-        ],
-        "results": {
-            "criteria": {
-                "objective": "retention",
-                "constraints": [...]
-            }
+    [
+        {
+            "campaign_id": "CAM001",
+            "name": "Q4 High-Value Focus",
+            "goal": "Target high-NPS agents with declining sales for Q4 boost",
+            "target_criteria": {
+                "nps_score": "high",
+                "sales_trend": "declining"
+            },
+            "segment_size": 150,
+            "created_at": "2025-09-15T10:30:00Z",
+            "status": "completed"
         }
-    }
+    ]
     ```
     """
     try:
-        # Call campaign service
-        result = campaign_service.create_campaign(goal=request.goal)
-
-        # Ensure the response includes the goal field for validation
-        if not result.get('goal'):
-            result['goal'] = request.goal
-
-        return result
-
+        return campaign_service.get_all_campaigns()
     except Exception as e:
-        # Return a properly formatted error response
-        error_response = {
-            "success": False,
-            "goal": request.goal,
-            "plan": [],
-            "error": f"Campaign creation failed: {str(e)}"
-        }
-        return error_response
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error retrieving campaigns: {str(e)}"
+        )
+
+@router.post("/create")
+async def create_campaign(request: CampaignRequest) -> Dict[str, Any]:
+    """
+    Create a new marketing campaign.
+
+    Args:
+        request: Campaign creation request with goal
+
+    Returns:
+        Campaign creation result with execution plan and results
+    """

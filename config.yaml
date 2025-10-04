@@ -1,7 +1,7 @@
 app:
   name: EngageIQ
   version: 1.0.0
-  environment: development  # development, staging, production
+  environment: development # development, staging, production
   debug: true
 
 api:
@@ -18,7 +18,8 @@ data:
     policy_data: "Policy Data.csv"
     complaints: "Complaints.csv"
     survey_data: "Survey Data.csv"
-  connector: csv  # csv, s3, athena, postgresql, snowflake, bigquery
+    campaigns: "campaigns.csv"
+  connector: csv # csv, s3, athena, postgresql, snowflake, bigquery
 
 connectors:
   csv:
@@ -28,33 +29,33 @@ connectors:
     encoding: "utf-8"
     skip_rows: 0
     cache_enabled: true
-    cache_ttl: 3600  # seconds
+    cache_ttl: 3600 # seconds
 
   s3:
     type: cloud_storage
     provider: aws
     region: us-east-1
     bucket: engageiq-data-prod
-    prefix: "campaign-data/"  # Optional folder path
+    prefix: "campaign-data/" # Optional folder path
     credentials:
       access_key_id: ${AWS_ACCESS_KEY_ID}
       secret_access_key: ${AWS_SECRET_ACCESS_KEY}
     file_format: csv
-    compression: none  # none, gzip, bzip2, snappy
+    compression: none # none, gzip, bzip2, snappy
     options:
       delimiter: ","
       encoding: "utf-8"
       skip_rows: 0
     cache_enabled: true
     cache_ttl: 7200
-    download_to_temp: true  # Download to /tmp before processing
+    download_to_temp: true # Download to /tmp before processing
     temp_dir: "/tmp/engageiq"
 
 llm:
   default_provider: claude
   providers:
     claude:
-      api_key: ${ANTHROPIC_API_KEY}  # From env var
+      api_key: ${ANTHROPIC_API_KEY} # From env var
       model: claude-sonnet-4-20250514
       max_tokens: 4000
       temperature: 0.7
@@ -66,7 +67,7 @@ llm:
 agents:
   orchestrator:
     enabled: true
-    timeout: 300  # seconds
+    timeout: 300 # seconds
     max_retries: 3
   goal_parser:
     enabled: true
@@ -78,7 +79,7 @@ agents:
     include_additional: true
   segmentation:
     enabled: true
-    default_method: rule_based  # rule_based, clustering, hybrid
+    default_method: rule_based # rule_based, clustering, hybrid
   profiler:
     enabled: true
     calculate_lift: true
