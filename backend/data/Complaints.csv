@@ -1,0 +1,1001 @@
+CUST_ID,COMPLAINTS_LAST_12_MONTHS,LATEST_TICKET_ID,CHANNEL_PHONE,CHANNEL_EMAIL,CHANNEL_CHAT,SEVERITY,COMPLAINT_TEXT,COMPLAINT_CATEGORY
+22933500367,0,,0,0,0,0,,
+564099674154,0,,0,0,0,0,,
+802786577378,0,,0,0,0,0,,
+635188396886,7,947570,1,1,0,7,Issue resolved but took multiple contacts,Service
+271058257385,1,515428,1,0,0,4,Requested help navigating website,Sales
+925790709133,0,,0,0,0,0,,
+875517639916,10,379183,1,1,1,10,Website frequently down during checkout,Website
+685285668483,4,143797,0,0,1,3,Requested policy copy,Policy
+105232497096,12,993656,1,1,1,5,Sales promised callback; received next day,Billing
+692291320722,0,,0,0,0,0,,
+833264167118,6,180301,0,1,0,4,Minor question about billing cycle,Billing
+269449847405,0,,0,0,0,0,,
+904053733955,0,,0,0,0,0,,
+427163996992,8,513768,1,0,0,4,Small typo on policy corrected,Billing
+982508621387,12,798697,1,0,0,3,Inquiry about claim status,Service
+676630025676,12,553167,1,1,1,1,Small typo on policy corrected,Website
+287876544081,8,356093,0,1,0,1,Minor question about billing cycle,Website
+429536754416,4,928779,0,1,0,1,Inquiry about claim status,Service
+641153318699,9,411430,1,1,0,6,Claim required extra documents; finally approved,Service
+497733940455,0,,0,0,0,0,,
+193597571033,3,896451,1,1,0,2,Small typo on policy corrected,Website
+429790376272,8,833407,1,0,0,5,Policy wording unclear; support clarified,Website
+495275379086,10,569078,0,1,0,5,Policy wording unclear; support clarified,Policy
+497586320420,9,895596,1,1,0,2,Requested policy copy,Billing
+732566659514,0,,0,0,0,0,,
+371326801416,1,334585,1,0,0,8,Aggressive upselling and poor follow-up,Service
+218536787578,6,344158,0,1,1,6,Website login intermittently failed,Sales
+663801529551,0,,0,0,0,0,,
+599113798231,0,,0,0,0,0,,
+159471038723,0,,0,0,0,0,,
+624393290502,11,195403,1,1,0,8,Claim denied without clear reason,Service
+182095806307,3,756961,1,1,0,9,Aggressive upselling and poor follow-up,Billing
+826243372325,0,,0,0,0,0,,
+185795311213,0,,0,0,0,0,,
+559872016647,10,179113,0,1,1,5,Claim required extra documents; finally approved,Website
+286677234854,1,722076,1,0,0,2,Requested help navigating website,Website
+533630009256,0,,0,0,0,0,,
+210052277984,7,571393,0,1,1,7,Claim required extra documents; finally approved,Service
+221822419647,5,717121,0,0,1,3,Updated contact preferences,Service
+667715554297,12,628461,0,1,1,2,Updated contact preferences,Policy
+724666396585,4,734762,1,0,0,8,Long wait times and unresolved issue,Policy
+59307940894,6,867604,1,0,0,3,Requested policy copy,Claims
+505152463258,0,,0,0,0,0,,
+973436912784,10,930697,0,1,0,5,Issue resolved but took multiple contacts,Service
+532066592278,7,226160,1,0,1,5,Claim required extra documents; finally approved,Service
+547918406126,8,420842,0,1,0,8,Claim denied without clear reason,Claims
+867903492277,7,926712,0,1,1,1,Small typo on policy corrected,Sales
+976704270611,7,453536,0,0,1,5,Sales promised callback; received next day,Policy
+560284568691,0,,0,0,0,0,,
+112804745626,7,541196,1,0,1,7,Sales promised callback; received next day,Service
+875130557175,0,,0,0,0,0,,
+875163538579,12,905396,0,0,1,1,Requested policy copy,Sales
+997621046830,3,796465,1,0,1,10,Customer rep not supportive,Billing
+274289656216,5,646337,0,1,1,8,Website frequently down during checkout,Service
+467027770888,2,295284,1,1,0,6,Issue resolved but took multiple contacts,Policy
+252805318341,0,,0,0,0,0,,
+401321533079,12,726614,0,1,0,4,Updated contact preferences,Sales
+956765782090,5,635541,1,1,0,10,Customer rep not supportive,Billing
+839882057924,0,,0,0,0,0,,
+356844156124,9,808270,1,1,0,9,Repeated billing errors,Claims
+198119319409,8,955667,1,1,1,9,Aggressive upselling and poor follow-up,Billing
+804122948460,3,891990,0,1,0,8,Aggressive upselling and poor follow-up,Service
+21779173555,6,784213,0,0,1,7,Sales promised callback; received next day,Sales
+86027010664,12,208410,1,1,0,8,Claim denied without clear reason,Claims
+161266272383,3,172586,0,0,1,7,Website login intermittently failed,Sales
+38286152852,0,,0,0,0,0,,
+332757735892,0,,0,0,0,0,,
+622711475923,0,,0,0,0,0,,
+616684392929,5,338177,1,1,0,7,Billing correction processed after delay,Claims
+419658197486,11,968593,0,1,1,5,Claim required extra documents; finally approved,Sales
+959743792468,0,,0,0,0,0,,
+785804348490,9,227765,1,0,0,1,Small typo on policy corrected,Sales
+467417653100,1,999660,0,0,1,8,Website frequently down during checkout,Sales
+100049611129,11,272162,1,0,0,9,Long wait times and unresolved issue,Billing
+697757021182,9,634076,0,1,1,9,Repeated billing errors,Policy
+353848335444,6,947684,0,0,1,4,Minor question about billing cycle,Claims
+375914159787,5,224671,1,1,1,9,Customer rep not supportive,Policy
+934514687531,11,266921,1,0,0,10,Claim denied without clear reason,Billing
+844910977376,12,474928,1,0,0,3,Small typo on policy corrected,Service
+963267520748,9,827537,0,1,1,7,Website login intermittently failed,Service
+891275083252,4,162607,1,1,1,1,Minor question about billing cycle,Claims
+720461013360,5,310668,0,1,0,8,Repeated billing errors,Claims
+461423009817,9,285744,1,1,0,6,Sales promised callback; received next day,Sales
+388190095183,8,125281,0,0,1,4,Small typo on policy corrected,Billing
+352115120390,0,,0,0,0,0,,
+106046533333,3,439057,0,1,1,4,Requested help navigating website,Claims
+363281755556,6,270627,0,1,0,5,Sales promised callback; received next day,Billing
+98093096211,0,,0,0,0,0,,
+61801328221,12,516859,0,1,1,7,Sales promised callback; received next day,Billing
+85469585599,3,428954,0,0,1,2,Inquiry about claim status,Service
+880992714231,12,170545,0,1,0,9,Customer rep not supportive,Website
+244504352058,0,,0,0,0,0,,
+556031684988,0,,0,0,0,0,,
+305872159498,0,,0,0,0,0,,
+514726387342,7,258895,1,0,0,2,Requested policy copy,Claims
+387217578777,10,770931,0,1,1,7,Policy wording unclear; support clarified,Sales
+612688953218,11,666005,1,0,0,6,Policy wording unclear; support clarified,Policy
+363904494667,0,,0,0,0,0,,
+818597531425,1,727533,1,0,0,5,Billing correction processed after delay,Service
+811335535539,0,,0,0,0,0,,
+279369385374,0,,0,0,0,0,,
+620016158414,6,910612,1,1,0,9,Long wait times and unresolved issue,Claims
+51387561390,0,,0,0,0,0,,
+5820717042,8,620016,1,0,1,7,Claim required extra documents; finally approved,Billing
+952614253753,0,,0,0,0,0,,
+128423665366,7,918710,1,1,0,9,Aggressive upselling and poor follow-up,Website
+144955823173,11,242713,1,0,0,7,Issue resolved but took multiple contacts,Policy
+434398948237,11,476344,0,0,1,2,Requested help navigating website,Billing
+712136073746,4,919245,0,0,1,3,Updated contact preferences,Policy
+469800767305,2,457508,0,0,1,4,Inquiry about claim status,Claims
+42261277501,5,843713,1,0,0,1,Requested policy copy,Website
+59978077142,11,368720,1,0,0,2,Requested policy copy,Billing
+858239026803,2,854556,0,1,0,5,Policy wording unclear; support clarified,Claims
+507264129252,0,,0,0,0,0,,
+743256757879,5,518212,1,1,1,4,Minor question about billing cycle,Sales
+121611597272,0,,0,0,0,0,,
+760910692881,1,682160,1,0,0,4,Requested policy copy,Claims
+288503968636,5,171979,1,0,1,7,Website login intermittently failed,Sales
+812209130136,3,868273,0,1,0,3,Updated contact preferences,Policy
+445690683887,4,505824,1,1,0,8,Aggressive upselling and poor follow-up,Website
+945606921596,2,958441,0,1,1,4,Requested policy copy,Policy
+715455368296,4,598696,1,1,0,1,Requested policy copy,Service
+654287355722,0,,0,0,0,0,,
+66169339659,0,,0,0,0,0,,
+751670294547,9,848735,1,0,0,4,Requested help navigating website,Claims
+42393329020,0,,0,0,0,0,,
+419197081329,5,709175,1,1,0,2,Updated contact preferences,Policy
+87706811997,0,,0,0,0,0,,
+969901595254,1,425366,0,1,1,5,Policy wording unclear; support clarified,Service
+904066426305,3,967365,0,1,1,1,Requested help navigating website,Service
+643423099403,0,,0,0,0,0,,
+427770568200,0,,0,0,0,0,,
+326144812275,0,,0,0,0,0,,
+629108778121,12,869387,0,0,1,10,Website frequently down during checkout,Website
+785764345830,7,973052,1,0,0,3,Minor question about billing cycle,Website
+537582335740,0,,0,0,0,0,,
+150697884873,0,,0,0,0,0,,
+127949544787,4,717942,1,0,0,5,Claim required extra documents; finally approved,Claims
+314649914509,6,368488,1,0,1,8,Claim denied without clear reason,Billing
+658179202390,10,244698,0,1,1,2,Requested help navigating website,Policy
+808525375261,11,358190,1,0,0,4,Small typo on policy corrected,Billing
+85836681904,0,,0,0,0,0,,
+254091746975,9,478257,1,0,1,10,Website frequently down during checkout,Billing
+856654117228,2,679099,0,1,1,2,Requested policy copy,Website
+96063633350,1,440605,1,0,1,4,Updated contact preferences,Service
+932602355931,6,992702,1,1,1,4,Inquiry about claim status,Service
+532205420207,0,,0,0,0,0,,
+805142168554,0,,0,0,0,0,,
+909045343894,0,,0,0,0,0,,
+227212625887,2,107739,0,1,0,2,Minor question about billing cycle,Website
+850846693662,12,700580,0,0,1,9,Website frequently down during checkout,Claims
+433434539299,8,516114,0,0,1,2,Inquiry about claim status,Service
+234360672540,6,734277,0,0,1,7,Issue resolved but took multiple contacts,Sales
+638587215061,0,,0,0,0,0,,
+256058986384,1,472318,1,0,1,8,Customer rep not supportive,Policy
+21199264812,0,,0,0,0,0,,
+74703743567,5,550010,0,1,1,8,Aggressive upselling and poor follow-up,Claims
+242238026036,11,465668,0,0,1,4,Small typo on policy corrected,Website
+241742596200,0,,0,0,0,0,,
+723056359135,10,977791,1,1,0,10,Claim denied without clear reason,Policy
+529605817390,12,496818,1,0,1,2,Updated contact preferences,Website
+582019458369,0,,0,0,0,0,,
+932017011808,7,669444,0,1,0,2,Requested help navigating website,Website
+131240965183,0,,0,0,0,0,,
+963370923385,7,360073,1,1,1,1,Updated contact preferences,Service
+800393339200,0,,0,0,0,0,,
+613384420051,2,371488,1,1,1,6,Claim required extra documents; finally approved,Claims
+643026887688,4,320170,1,1,1,9,Repeated billing errors,Website
+19043754675,8,967935,1,0,0,8,Aggressive upselling and poor follow-up,Claims
+702999133855,7,240152,1,0,0,7,Issue resolved but took multiple contacts,Service
+755308069047,2,983431,1,0,1,5,Website login intermittently failed,Service
+584967813719,5,970079,1,0,0,10,Customer rep not supportive,Website
+800506750620,1,837445,0,1,1,2,Small typo on policy corrected,Service
+528111282457,6,428667,0,0,1,9,Customer rep not supportive,Billing
+455657325863,6,541774,1,0,0,2,Requested help navigating website,Policy
+67922132330,5,220372,1,1,1,7,Claim required extra documents; finally approved,Claims
+539675595326,7,252124,0,0,1,2,Requested policy copy,Policy
+596126591277,12,832854,1,1,0,7,Sales promised callback; received next day,Website
+234608157883,1,688362,0,1,1,9,Website frequently down during checkout,Sales
+218799984533,0,,0,0,0,0,,
+272568023797,0,,0,0,0,0,,
+550007439713,5,923810,1,0,1,8,Repeated billing errors,Policy
+296775370927,6,999645,0,1,0,6,Website login intermittently failed,Billing
+269203157618,0,,0,0,0,0,,
+462113323004,0,,0,0,0,0,,
+212570839212,0,,0,0,0,0,,
+187380532064,8,950790,1,1,0,5,Issue resolved but took multiple contacts,Claims
+19450228725,4,373406,0,1,0,9,Customer rep not supportive,Policy
+333373171574,12,593097,1,0,0,6,Claim required extra documents; finally approved,Billing
+346734419175,0,,0,0,0,0,,
+131166472113,0,,0,0,0,0,,
+97325822321,0,,0,0,0,0,,
+104966917016,10,425770,1,0,0,2,Inquiry about claim status,Website
+743099677415,0,,0,0,0,0,,
+165388251922,7,166154,1,1,0,4,Minor question about billing cycle,Claims
+719553182573,0,,0,0,0,0,,
+150814705871,0,,0,0,0,0,,
+662290219665,11,508928,1,1,0,6,Claim required extra documents; finally approved,Billing
+641663530960,11,516108,0,0,1,6,Website login intermittently failed,Billing
+416139398998,9,856780,1,0,1,6,Sales promised callback; received next day,Billing
+958165798501,3,410703,1,0,1,10,Aggressive upselling and poor follow-up,Service
+72722175543,1,757640,0,1,1,2,Inquiry about claim status,Billing
+842254346457,0,,0,0,0,0,,
+886098046985,4,897686,1,1,0,7,Claim required extra documents; finally approved,Billing
+658846312085,0,,0,0,0,0,,
+493464971359,1,474095,1,0,1,4,Requested policy copy,Sales
+668817735430,0,,0,0,0,0,,
+807719270971,1,805278,1,0,0,1,Requested help navigating website,Sales
+808141948427,8,404577,1,0,0,1,Requested help navigating website,Service
+174055110984,2,599654,1,0,0,4,Minor question about billing cycle,Service
+120920314657,0,,0,0,0,0,,
+240405821867,2,682466,1,1,0,9,Long wait times and unresolved issue,Website
+272720666565,12,829536,0,1,1,5,Policy wording unclear; support clarified,Policy
+748794815940,8,633536,0,0,1,8,Repeated billing errors,Policy
+482728964481,10,315623,1,0,0,10,Long wait times and unresolved issue,Claims
+517844907766,8,965106,1,0,0,3,Minor question about billing cycle,Policy
+677623213015,9,409936,1,1,0,1,Updated contact preferences,Claims
+83935104949,2,579892,1,0,1,6,Issue resolved but took multiple contacts,Policy
+843226553495,5,674800,1,0,0,8,Repeated billing errors,Claims
+360143825793,3,546294,1,0,0,3,Minor question about billing cycle,Website
+811161471868,8,548730,0,1,0,8,Long wait times and unresolved issue,Billing
+121041636265,10,125583,1,0,0,2,Small typo on policy corrected,Billing
+861178766243,0,,0,0,0,0,,
+437232617650,0,,0,0,0,0,,
+67566960371,7,882049,1,1,1,6,Claim required extra documents; finally approved,Website
+809964947103,7,577933,0,0,1,4,Minor question about billing cycle,Billing
+11514782803,6,902015,0,1,0,4,Small typo on policy corrected,Billing
+930954440352,0,,0,0,0,0,,
+866432790236,9,368392,1,0,1,10,Long wait times and unresolved issue,Claims
+281109083885,9,424566,1,1,0,1,Requested help navigating website,Claims
+761334601088,6,912064,1,0,0,10,Customer rep not supportive,Claims
+215841971115,0,,0,0,0,0,,
+848934776326,9,910068,0,0,1,1,Inquiry about claim status,Website
+216353365133,5,606392,1,1,1,10,Long wait times and unresolved issue,Claims
+338916778243,12,892839,1,0,0,2,Minor question about billing cycle,Sales
+330080252355,0,,0,0,0,0,,
+688163940485,2,447263,0,1,0,7,Website login intermittently failed,Service
+254065436349,0,,0,0,0,0,,
+538130280840,12,944343,0,1,0,6,Billing correction processed after delay,Policy
+870555020440,0,,0,0,0,0,,
+275223323344,0,,0,0,0,0,,
+337026426781,0,,0,0,0,0,,
+807128301503,1,250844,0,1,0,9,Claim denied without clear reason,Policy
+180000768139,0,,0,0,0,0,,
+435459392229,0,,0,0,0,0,,
+990255859478,3,205445,1,0,0,5,Billing correction processed after delay,Service
+435348730022,0,,0,0,0,0,,
+42946411392,12,918788,1,1,0,7,Website login intermittently failed,Service
+968433753439,5,992177,1,1,0,10,Customer rep not supportive,Sales
+99539244993,0,,0,0,0,0,,
+228778151604,4,872140,0,1,0,6,Issue resolved but took multiple contacts,Billing
+787942453300,0,,0,0,0,0,,
+217953201856,0,,0,0,0,0,,
+810147054199,8,765429,0,0,1,3,Requested help navigating website,Service
+650707010384,0,,0,0,0,0,,
+409853386131,0,,0,0,0,0,,
+187644807799,0,,0,0,0,0,,
+231217751924,0,,0,0,0,0,,
+309983158265,0,,0,0,0,0,,
+964775427976,10,712034,0,0,1,10,Long wait times and unresolved issue,Service
+453741803364,7,236010,0,1,0,1,Updated contact preferences,Policy
+711590761815,12,165039,0,1,0,2,Requested help navigating website,Website
+89179174434,0,,0,0,0,0,,
+513098948108,2,426792,0,1,0,8,Customer rep not supportive,Sales
+248679273520,8,320893,0,1,0,1,Requested policy copy,Website
+922142520241,7,114752,1,1,0,4,Requested policy copy,Website
+327764157316,2,816871,0,1,0,8,Website frequently down during checkout,Service
+821669184537,12,716052,1,0,0,3,Small typo on policy corrected,Sales
+537787782794,4,604196,1,0,0,2,Small typo on policy corrected,Service
+458685468468,2,806953,1,1,0,6,Claim required extra documents; finally approved,Service
+868553269711,1,771783,0,1,0,10,Customer rep not supportive,Service
+9645827374,9,460141,0,1,0,5,Billing correction processed after delay,Sales
+587598064692,0,,0,0,0,0,,
+255246747315,5,748050,0,1,0,8,Aggressive upselling and poor follow-up,Website
+284347343292,9,318250,1,1,0,2,Requested policy copy,Sales
+571840720275,6,430021,1,0,0,6,Sales promised callback; received next day,Service
+335723856058,5,348108,1,1,1,3,Requested policy copy,Website
+352964718756,2,880189,1,1,1,8,Website frequently down during checkout,Website
+145238820523,2,770019,0,1,1,6,Sales promised callback; received next day,Website
+28516157960,12,634136,1,1,0,4,Updated contact preferences,Website
+626653144757,3,507630,0,1,0,6,Website login intermittently failed,Billing
+72658732023,12,458764,0,1,0,2,Inquiry about claim status,Sales
+751198943068,9,876642,1,1,0,4,Minor question about billing cycle,Website
+941108835065,11,877206,1,0,0,8,Long wait times and unresolved issue,Billing
+861090389392,1,767458,1,1,0,2,Small typo on policy corrected,Website
+159099396349,6,904339,1,0,0,3,Inquiry about claim status,Service
+478223528477,11,773975,1,0,0,1,Requested policy copy,Billing
+464030535202,5,273348,1,0,0,3,Minor question about billing cycle,Claims
+36070260357,0,,0,0,0,0,,
+994089393955,7,232594,0,1,0,2,Requested policy copy,Claims
+41208928215,0,,0,0,0,0,,
+269350959728,9,890024,1,0,1,1,Updated contact preferences,Billing
+738817257381,0,,0,0,0,0,,
+643737904364,10,475242,1,0,0,1,Updated contact preferences,Service
+183037458914,8,558463,1,0,1,4,Small typo on policy corrected,Billing
+269028803586,7,797441,0,1,1,6,Issue resolved but took multiple contacts,Sales
+383426717674,9,705792,0,0,1,10,Repeated billing errors,Billing
+235545506027,11,916311,1,1,0,9,Repeated billing errors,Claims
+968294363466,5,197105,0,1,0,1,Requested help navigating website,Sales
+369394606019,3,548524,1,0,0,4,Requested policy copy,Claims
+528530941654,0,,0,0,0,0,,
+867269354285,0,,0,0,0,0,,
+289148744719,9,433180,1,0,1,10,Claim denied without clear reason,Service
+265783926221,2,660283,1,0,1,5,Sales promised callback; received next day,Billing
+129940806638,10,320549,1,1,0,1,Updated contact preferences,Claims
+970649264230,0,,0,0,0,0,,
+853959482658,7,132788,0,1,1,6,Claim required extra documents; finally approved,Website
+627801410714,0,,0,0,0,0,,
+441087761360,1,502880,1,0,0,3,Inquiry about claim status,Service
+758842705127,7,804862,0,1,0,7,Billing correction processed after delay,Claims
+885998941698,6,406537,1,0,0,2,Updated contact preferences,Billing
+592951656939,9,617550,1,0,0,7,Claim required extra documents; finally approved,Policy
+668184225196,0,,0,0,0,0,,
+209099414745,0,,0,0,0,0,,
+990778703726,0,,0,0,0,0,,
+398519064398,0,,0,0,0,0,,
+991279824711,2,777266,1,0,0,5,Website login intermittently failed,Billing
+91200861089,6,173579,1,0,1,3,Inquiry about claim status,Policy
+721198823256,9,195463,1,0,1,3,Requested help navigating website,Claims
+760156336965,12,536085,0,0,1,3,Updated contact preferences,Website
+539894260460,0,,0,0,0,0,,
+348423967610,2,307093,1,0,1,4,Requested help navigating website,Policy
+173273172270,7,402970,0,1,1,9,Long wait times and unresolved issue,Website
+136294911331,5,118719,1,1,0,3,Small typo on policy corrected,Claims
+251687869048,1,753339,0,1,1,8,Aggressive upselling and poor follow-up,Billing
+634885737333,9,785563,0,1,1,10,Website frequently down during checkout,Claims
+337212969456,8,679324,0,0,1,5,Issue resolved but took multiple contacts,Website
+448817892852,0,,0,0,0,0,,
+362856938292,4,526307,1,1,0,8,Repeated billing errors,Sales
+118315561789,0,,0,0,0,0,,
+466837476792,10,404051,1,0,1,5,Claim required extra documents; finally approved,Sales
+612602063434,3,744699,1,0,0,2,Requested policy copy,Service
+409084029766,4,897630,1,0,0,1,Inquiry about claim status,Sales
+393301704393,3,420611,1,1,0,5,Website login intermittently failed,Claims
+59201869924,12,819270,0,1,0,10,Claim denied without clear reason,Policy
+48377393255,8,802350,1,1,1,9,Claim denied without clear reason,Claims
+346969575084,4,616059,1,1,0,9,Long wait times and unresolved issue,Claims
+28409343191,3,605198,1,1,1,6,Policy wording unclear; support clarified,Billing
+420682816133,7,103182,1,1,1,4,Requested help navigating website,Website
+461299448396,5,341970,1,0,1,1,Inquiry about claim status,Service
+542284132359,1,796586,0,1,0,3,Inquiry about claim status,Sales
+59072098541,11,752828,1,1,0,10,Customer rep not supportive,Billing
+652807372607,10,396787,0,1,0,4,Small typo on policy corrected,Billing
+301547367014,3,881604,0,1,0,5,Website login intermittently failed,Service
+452840031559,10,475212,1,1,1,4,Updated contact preferences,Billing
+771893279386,12,210280,0,0,1,10,Claim denied without clear reason,Website
+328115686700,0,,0,0,0,0,,
+625229040226,12,247950,1,1,0,10,Repeated billing errors,Service
+855158503924,3,748626,0,1,0,1,Small typo on policy corrected,Billing
+161978543100,0,,0,0,0,0,,
+467411304879,0,,0,0,0,0,,
+211734004794,0,,0,0,0,0,,
+762541206975,0,,0,0,0,0,,
+718055760299,0,,0,0,0,0,,
+907246659960,6,664599,1,0,0,9,Customer rep not supportive,Sales
+923928932878,4,360507,1,0,0,6,Policy wording unclear; support clarified,Sales
+329133124209,0,,0,0,0,0,,
+350047717641,12,815573,1,0,1,2,Inquiry about claim status,Claims
+820728980921,11,293077,0,0,1,4,Inquiry about claim status,Sales
+182368125222,3,449450,1,1,1,3,Inquiry about claim status,Policy
+502756618308,0,,0,0,0,0,,
+922517865402,12,502075,0,1,1,7,Policy wording unclear; support clarified,Billing
+689809213011,6,902694,1,0,1,2,Small typo on policy corrected,Sales
+31540766874,6,701663,0,0,1,3,Updated contact preferences,Claims
+886462679179,0,,0,0,0,0,,
+698431091499,4,353928,0,0,1,10,Aggressive upselling and poor follow-up,Billing
+853768867619,0,,0,0,0,0,,
+183813752455,0,,0,0,0,0,,
+610343341026,6,605394,1,1,1,7,Claim required extra documents; finally approved,Website
+886850798777,0,,0,0,0,0,,
+458829719244,10,650054,1,0,0,10,Claim denied without clear reason,Policy
+223582376207,12,739314,1,1,0,7,Policy wording unclear; support clarified,Sales
+105470341975,5,546792,1,1,0,7,Billing correction processed after delay,Claims
+98996936954,12,570357,1,0,1,6,Issue resolved but took multiple contacts,Policy
+279124414686,0,,0,0,0,0,,
+457354873164,0,,0,0,0,0,,
+564972539925,0,,0,0,0,0,,
+636057173927,12,924478,0,0,1,9,Aggressive upselling and poor follow-up,Service
+537242206434,6,476345,1,0,0,10,Website frequently down during checkout,Billing
+260567864981,0,,0,0,0,0,,
+354678142181,0,,0,0,0,0,,
+161051332712,12,631398,1,1,0,1,Inquiry about claim status,Website
+914452876472,3,486649,0,1,1,7,Policy wording unclear; support clarified,Policy
+154606239809,6,715592,1,0,0,10,Customer rep not supportive,Policy
+758163006722,6,768443,1,0,1,5,Policy wording unclear; support clarified,Website
+531848014719,10,882553,1,1,0,3,Updated contact preferences,Policy
+512815337140,12,365934,0,1,0,7,Claim required extra documents; finally approved,Claims
+849371911570,12,695674,1,1,1,1,Requested policy copy,Service
+753863911807,4,657846,1,0,1,4,Inquiry about claim status,Billing
+318266159541,12,191175,0,1,0,2,Small typo on policy corrected,Claims
+497064785474,8,781440,1,0,1,10,Customer rep not supportive,Website
+407826676704,7,994065,1,1,0,9,Website frequently down during checkout,Policy
+557688786000,0,,0,0,0,0,,
+240313652352,6,793103,1,1,0,8,Claim denied without clear reason,Service
+481333557788,7,448209,1,0,0,4,Updated contact preferences,Service
+65081945442,12,862499,0,1,1,2,Updated contact preferences,Sales
+414521706373,7,143958,1,0,0,10,Claim denied without clear reason,Billing
+336316117171,0,,0,0,0,0,,
+749352495599,11,992108,1,0,0,10,Aggressive upselling and poor follow-up,Policy
+561888447539,10,936105,0,1,0,6,Website login intermittently failed,Claims
+263240559116,7,220502,1,0,0,10,Aggressive upselling and poor follow-up,Website
+488078415785,3,654172,1,0,0,1,Small typo on policy corrected,Sales
+468190402610,0,,0,0,0,0,,
+900310875384,0,,0,0,0,0,,
+131628320492,11,914674,1,0,1,1,Updated contact preferences,Billing
+809533264864,9,124188,1,0,0,8,Website frequently down during checkout,Billing
+556309785473,4,977207,0,1,1,5,Website login intermittently failed,Claims
+875006624547,2,426820,1,0,1,10,Website frequently down during checkout,Claims
+542520453638,2,792860,0,1,0,7,Issue resolved but took multiple contacts,Website
+627036750800,7,543531,0,1,1,6,Claim required extra documents; finally approved,Sales
+61498158469,0,,0,0,0,0,,
+309909810537,8,120392,1,0,0,4,Updated contact preferences,Service
+149964185348,6,960516,0,1,1,6,Policy wording unclear; support clarified,Claims
+206743371806,0,,0,0,0,0,,
+291371718296,5,152847,0,1,1,5,Sales promised callback; received next day,Billing
+113218643641,7,437706,0,1,1,3,Minor question about billing cycle,Service
+707904098330,0,,0,0,0,0,,
+148140176116,10,791489,1,1,0,10,Website frequently down during checkout,Website
+658970895763,5,449011,1,1,1,3,Minor question about billing cycle,Billing
+251798412816,0,,0,0,0,0,,
+368608041242,0,,0,0,0,0,,
+212468903555,7,832738,0,0,1,6,Policy wording unclear; support clarified,Website
+284552744388,0,,0,0,0,0,,
+7900636082,2,362919,0,0,1,8,Claim denied without clear reason,Claims
+683680864644,6,251690,0,1,0,6,Issue resolved but took multiple contacts,Policy
+121413183198,0,,0,0,0,0,,
+735253997225,0,,0,0,0,0,,
+674803156414,0,,0,0,0,0,,
+461768474587,0,,0,0,0,0,,
+99194583774,0,,0,0,0,0,,
+68641326354,0,,0,0,0,0,,
+395364501219,1,809585,0,1,0,10,Customer rep not supportive,Service
+841080473699,10,275802,0,1,1,1,Requested help navigating website,Billing
+241950366610,8,468002,0,0,1,4,Updated contact preferences,Service
+645127730797,11,656516,1,0,0,4,Small typo on policy corrected,Service
+950935273256,9,722081,1,1,0,9,Long wait times and unresolved issue,Claims
+217116175808,0,,0,0,0,0,,
+918667505027,0,,0,0,0,0,,
+345874797084,0,,0,0,0,0,,
+860273045816,0,,0,0,0,0,,
+218422898730,0,,0,0,0,0,,
+46465743153,0,,0,0,0,0,,
+593848165329,9,250894,1,0,0,4,Requested policy copy,Billing
+852203156701,0,,0,0,0,0,,
+14644169107,7,367710,0,1,1,10,Aggressive upselling and poor follow-up,Website
+158170664688,7,679084,0,1,0,6,Issue resolved but took multiple contacts,Billing
+941439634881,0,,0,0,0,0,,
+972722837310,8,126962,0,0,1,3,Updated contact preferences,Billing
+652652205406,12,956990,1,0,1,8,Repeated billing errors,Claims
+199730410385,0,,0,0,0,0,,
+889988360288,6,880348,1,0,0,8,Aggressive upselling and poor follow-up,Service
+627148238450,0,,0,0,0,0,,
+617133289534,8,299656,1,1,0,10,Long wait times and unresolved issue,Website
+738359196086,10,331827,0,0,1,10,Customer rep not supportive,Service
+467645346157,10,433077,1,1,0,1,Inquiry about claim status,Claims
+336592169889,3,729727,0,1,1,1,Requested help navigating website,Service
+858524547137,0,,0,0,0,0,,
+683504247932,3,373157,1,1,1,6,Issue resolved but took multiple contacts,Billing
+389518939812,11,469931,1,0,0,2,Updated contact preferences,Service
+498876753876,6,323700,1,1,0,7,Policy wording unclear; support clarified,Policy
+359142411621,0,,0,0,0,0,,
+583836036229,0,,0,0,0,0,,
+447408978465,0,,0,0,0,0,,
+133608352714,0,,0,0,0,0,,
+780239309216,9,546850,1,1,0,7,Claim required extra documents; finally approved,Service
+793418977076,0,,0,0,0,0,,
+639685603121,0,,0,0,0,0,,
+453015208134,11,237980,0,1,1,1,Small typo on policy corrected,Sales
+465648021246,0,,0,0,0,0,,
+577077783390,0,,0,0,0,0,,
+671734787908,7,612671,1,1,1,10,Customer rep not supportive,Claims
+105856879621,12,698247,0,1,0,1,Requested help navigating website,Service
+794874430187,0,,0,0,0,0,,
+95021476068,2,480630,0,1,0,6,Website login intermittently failed,Policy
+200716834417,0,,0,0,0,0,,
+628438182453,2,509274,0,0,1,4,Inquiry about claim status,Service
+720788924062,9,725689,1,0,1,1,Requested policy copy,Claims
+730785915366,8,255939,1,0,0,8,Claim denied without clear reason,Billing
+119587869004,0,,0,0,0,0,,
+569423961254,3,902411,0,0,1,1,Minor question about billing cycle,Service
+706427416532,1,519947,1,0,0,1,Inquiry about claim status,Website
+493182822932,5,507124,0,0,1,9,Repeated billing errors,Claims
+210257622633,0,,0,0,0,0,,
+760610728078,10,802358,0,0,1,10,Aggressive upselling and poor follow-up,Claims
+480444111471,2,788822,1,0,0,5,Sales promised callback; received next day,Policy
+959480209367,0,,0,0,0,0,,
+589722759045,2,840163,0,0,1,7,Website login intermittently failed,Sales
+568895900479,7,208361,0,1,0,3,Requested help navigating website,Website
+545973093975,0,,0,0,0,0,,
+387817482160,6,514156,0,1,0,4,Small typo on policy corrected,Service
+204797980786,0,,0,0,0,0,,
+873729450796,0,,0,0,0,0,,
+191552339699,3,749175,1,0,0,1,Requested policy copy,Service
+363000020540,4,331899,0,1,0,5,Policy wording unclear; support clarified,Service
+626079422605,2,399408,1,1,1,5,Policy wording unclear; support clarified,Billing
+157237361091,12,441903,0,1,1,4,Requested policy copy,Claims
+552174019493,7,574957,1,0,0,5,Issue resolved but took multiple contacts,Website
+379586606061,0,,0,0,0,0,,
+621352101517,8,887331,1,1,0,7,Claim required extra documents; finally approved,Claims
+501136610032,1,315350,1,0,1,10,Long wait times and unresolved issue,Website
+945908011195,0,,0,0,0,0,,
+370602040486,9,281779,1,0,0,10,Website frequently down during checkout,Billing
+682686757277,2,493785,0,0,1,2,Minor question about billing cycle,Website
+182538858796,8,580069,1,1,1,6,Sales promised callback; received next day,Policy
+669265399677,12,771951,0,1,1,3,Minor question about billing cycle,Policy
+202674546728,0,,0,0,0,0,,
+457393339692,12,991002,1,1,1,7,Billing correction processed after delay,Service
+332408359737,9,538546,1,1,0,3,Minor question about billing cycle,Policy
+514501045297,5,523470,1,1,1,9,Aggressive upselling and poor follow-up,Claims
+709653672795,2,193600,0,1,0,10,Customer rep not supportive,Service
+312618904341,11,173952,0,0,1,10,Customer rep not supportive,Billing
+69744022606,6,265869,1,0,0,7,Sales promised callback; received next day,Sales
+979675138415,12,420657,1,0,0,9,Website frequently down during checkout,Sales
+169378429346,11,857775,1,1,0,2,Updated contact preferences,Policy
+320949390250,5,163373,1,1,1,9,Claim denied without clear reason,Website
+134676450816,0,,0,0,0,0,,
+384308281022,2,155588,1,1,1,3,Requested help navigating website,Billing
+218932421782,10,367847,1,1,1,1,Requested help navigating website,Service
+70952757377,2,191997,0,0,1,9,Claim denied without clear reason,Service
+492558963972,0,,0,0,0,0,,
+31922325317,0,,0,0,0,0,,
+241660744108,3,706794,0,1,1,1,Updated contact preferences,Website
+567950122862,2,809083,0,0,1,5,Billing correction processed after delay,Sales
+190414370990,11,628856,1,1,0,9,Customer rep not supportive,Billing
+617603764446,6,293809,1,0,0,8,Customer rep not supportive,Website
+843585473762,0,,0,0,0,0,,
+848087310362,2,260891,0,1,0,4,Minor question about billing cycle,Service
+627177212,0,,0,0,0,0,,
+761486425205,4,599763,1,0,1,10,Website frequently down during checkout,Website
+357840819869,9,634393,0,1,1,6,Billing correction processed after delay,Policy
+978874680044,9,168050,1,0,0,10,Aggressive upselling and poor follow-up,Service
+475332157398,12,369231,0,1,1,10,Claim denied without clear reason,Service
+201771835897,7,540799,1,0,0,3,Requested policy copy,Claims
+394646134125,7,892168,1,1,0,7,Website login intermittently failed,Sales
+288127461551,0,,0,0,0,0,,
+395977889778,2,593772,1,0,0,10,Claim denied without clear reason,Service
+403738950107,0,,0,0,0,0,,
+427697700591,0,,0,0,0,0,,
+812844393028,10,617464,1,1,0,4,Minor question about billing cycle,Policy
+233264076084,6,349272,0,0,1,7,Issue resolved but took multiple contacts,Service
+541246590594,11,966381,1,0,1,10,Customer rep not supportive,Website
+87254344725,11,313345,0,1,1,3,Inquiry about claim status,Billing
+944359698115,0,,0,0,0,0,,
+443344352327,0,,0,0,0,0,,
+688333827703,1,996970,0,1,1,6,Sales promised callback; received next day,Billing
+558577373909,0,,0,0,0,0,,
+187199371320,2,843873,1,1,0,4,Small typo on policy corrected,Website
+420087191426,5,368095,1,1,0,2,Requested help navigating website,Service
+446982626287,0,,0,0,0,0,,
+289658741963,0,,0,0,0,0,,
+756708625643,0,,0,0,0,0,,
+782991009474,12,622064,1,0,0,8,Long wait times and unresolved issue,Policy
+220153417743,2,829121,0,0,1,4,Inquiry about claim status,Policy
+737200156099,8,725718,1,1,0,2,Requested help navigating website,Website
+213646670023,1,465693,1,0,0,1,Inquiry about claim status,Billing
+946819515392,0,,0,0,0,0,,
+852983810015,0,,0,0,0,0,,
+737153440008,0,,0,0,0,0,,
+575561100096,0,,0,0,0,0,,
+813239405222,11,645483,0,0,1,10,Website frequently down during checkout,Website
+252745254159,0,,0,0,0,0,,
+321596648648,0,,0,0,0,0,,
+204037957990,9,630750,1,1,1,6,Billing correction processed after delay,Service
+491608458831,12,945464,1,0,0,2,Updated contact preferences,Service
+401014666922,0,,0,0,0,0,,
+77114721580,9,945862,0,0,1,2,Requested help navigating website,Claims
+995862119707,0,,0,0,0,0,,
+823935460980,11,952430,1,1,0,2,Minor question about billing cycle,Billing
+936397170001,1,158202,1,1,1,8,Aggressive upselling and poor follow-up,Billing
+776071359739,11,577475,1,0,0,3,Requested help navigating website,Sales
+86955243274,0,,0,0,0,0,,
+683414973508,3,931779,0,0,1,3,Requested policy copy,Billing
+653714973807,8,482509,1,1,0,7,Policy wording unclear; support clarified,Policy
+67820992093,0,,0,0,0,0,,
+872142943791,0,,0,0,0,0,,
+342162249855,0,,0,0,0,0,,
+421127191588,4,578585,1,1,0,8,Claim denied without clear reason,Policy
+261280157782,0,,0,0,0,0,,
+591551646021,0,,0,0,0,0,,
+935515700604,3,306863,0,1,1,7,Claim required extra documents; finally approved,Billing
+230446449805,10,859212,1,0,0,4,Minor question about billing cycle,Policy
+286664165264,0,,0,0,0,0,,
+671496551940,4,340066,0,1,0,9,Long wait times and unresolved issue,Claims
+357625166557,0,,0,0,0,0,,
+816303954834,10,876278,1,1,1,8,Customer rep not supportive,Billing
+605447457464,1,501611,0,1,0,3,Requested policy copy,Website
+59464016572,0,,0,0,0,0,,
+672989169230,0,,0,0,0,0,,
+778204092752,10,577544,0,1,0,2,Updated contact preferences,Service
+800479928503,4,896284,1,0,0,10,Long wait times and unresolved issue,Sales
+775535754819,6,182704,1,1,0,8,Claim denied without clear reason,Website
+907010120319,1,717774,1,1,1,4,Updated contact preferences,Policy
+503207192394,0,,0,0,0,0,,
+548297235013,2,948891,1,0,0,2,Requested help navigating website,Policy
+990896917397,0,,0,0,0,0,,
+369603063295,1,587208,0,1,0,2,Requested help navigating website,Claims
+533392091873,2,696856,1,0,1,2,Small typo on policy corrected,Service
+888783569337,0,,0,0,0,0,,
+398419243884,12,410340,0,0,1,9,Customer rep not supportive,Website
+363764586240,0,,0,0,0,0,,
+687896571312,2,808456,1,1,0,4,Minor question about billing cycle,Policy
+385357345918,0,,0,0,0,0,,
+622202748087,1,237460,0,0,1,5,Website login intermittently failed,Service
+653994225021,0,,0,0,0,0,,
+861047432272,10,124448,1,0,0,4,Requested policy copy,Billing
+741463188757,9,652214,0,0,1,2,Requested policy copy,Sales
+916995982251,0,,0,0,0,0,,
+70056318501,5,843744,1,1,1,3,Requested policy copy,Billing
+470985573861,7,288742,0,0,1,9,Long wait times and unresolved issue,Claims
+33968004876,0,,0,0,0,0,,
+778049464261,10,997162,1,1,1,4,Requested help navigating website,Claims
+525579243685,10,506033,1,1,0,7,Billing correction processed after delay,Service
+403492306806,10,469914,0,1,0,4,Inquiry about claim status,Service
+603422949124,4,854268,0,1,1,10,Aggressive upselling and poor follow-up,Website
+269948858605,0,,0,0,0,0,,
+32716445750,12,321630,1,1,1,8,Repeated billing errors,Policy
+987679219451,4,689050,1,0,0,4,Requested policy copy,Sales
+640486126939,0,,0,0,0,0,,
+889143999782,6,905068,1,0,0,5,Policy wording unclear; support clarified,Service
+528697286002,11,561413,0,0,1,6,Claim required extra documents; finally approved,Billing
+499854397824,0,,0,0,0,0,,
+89556788683,4,109881,1,0,1,7,Sales promised callback; received next day,Service
+895112064374,0,,0,0,0,0,,
+762992836793,4,112286,0,1,0,6,Issue resolved but took multiple contacts,Billing
+128588076061,4,662500,0,0,1,10,Website frequently down during checkout,Policy
+735206759658,5,279149,0,0,1,2,Updated contact preferences,Website
+436899913954,9,288214,0,1,0,8,Customer rep not supportive,Policy
+687103133737,12,845864,1,0,0,10,Repeated billing errors,Service
+950919430348,0,,0,0,0,0,,
+358240672774,10,139030,0,1,1,1,Requested help navigating website,Service
+228069082663,10,524166,1,0,1,9,Long wait times and unresolved issue,Sales
+60294610712,3,466988,0,1,1,9,Website frequently down during checkout,Policy
+686694473474,0,,0,0,0,0,,
+520803281841,9,509021,0,1,1,3,Minor question about billing cycle,Claims
+703515680214,0,,0,0,0,0,,
+179963707707,4,257427,1,0,0,6,Website login intermittently failed,Sales
+749805646119,0,,0,0,0,0,,
+826763357113,4,638775,0,1,1,6,Sales promised callback; received next day,Sales
+940115515685,10,487348,0,1,0,7,Sales promised callback; received next day,Billing
+245024314831,5,184294,0,1,0,8,Repeated billing errors,Billing
+912767432517,5,860751,1,0,0,9,Aggressive upselling and poor follow-up,Policy
+297371224976,5,663492,1,1,1,1,Inquiry about claim status,Claims
+389518756057,0,,0,0,0,0,,
+254403491891,8,142097,1,0,0,1,Small typo on policy corrected,Service
+143267153346,8,242604,1,0,0,5,Policy wording unclear; support clarified,Billing
+627929136432,0,,0,0,0,0,,
+784281085988,3,648764,0,1,0,4,Minor question about billing cycle,Policy
+394821219690,11,474095,1,0,0,5,Policy wording unclear; support clarified,Billing
+952069044729,0,,0,0,0,0,,
+235130232823,7,399331,0,1,1,4,Small typo on policy corrected,Sales
+546801388677,5,399518,1,0,0,5,Policy wording unclear; support clarified,Policy
+95989410854,0,,0,0,0,0,,
+380567456756,0,,0,0,0,0,,
+224335746171,6,787687,1,0,1,9,Website frequently down during checkout,Billing
+90157852480,6,254897,0,0,1,5,Website login intermittently failed,Website
+881358987048,0,,0,0,0,0,,
+813852659305,0,,0,0,0,0,,
+514891265626,5,884692,1,1,0,2,Requested help navigating website,Website
+489289417372,7,836990,0,0,1,6,Claim required extra documents; finally approved,Sales
+918923790395,11,933923,1,0,1,6,Website login intermittently failed,Claims
+250868164345,2,172255,1,0,1,1,Updated contact preferences,Website
+162913017708,3,423681,0,0,1,10,Website frequently down during checkout,Sales
+952414612530,1,858920,0,0,1,2,Requested policy copy,Service
+112803562530,0,,0,0,0,0,,
+393616105231,0,,0,0,0,0,,
+449389566996,9,952573,1,0,1,2,Requested policy copy,Website
+103891469731,0,,0,0,0,0,,
+286343980042,0,,0,0,0,0,,
+859869456915,0,,0,0,0,0,,
+583794033798,7,381359,1,0,0,3,Small typo on policy corrected,Sales
+322262795334,3,215623,0,1,0,3,Requested policy copy,Policy
+200197571701,7,347287,0,1,1,1,Inquiry about claim status,Billing
+982031478598,4,215515,1,0,1,7,Website login intermittently failed,Website
+561223281967,0,,0,0,0,0,,
+115147534215,5,306045,0,1,0,6,Sales promised callback; received next day,Billing
+200748124508,4,303059,1,0,0,7,Claim required extra documents; finally approved,Claims
+385253234939,10,111398,0,0,1,4,Minor question about billing cycle,Website
+5336223484,3,923171,1,1,0,1,Updated contact preferences,Claims
+762876484653,0,,0,0,0,0,,
+582745174935,4,185113,0,0,1,3,Minor question about billing cycle,Billing
+485919943930,7,579881,1,1,1,10,Website frequently down during checkout,Claims
+45744827208,11,571400,1,0,0,1,Requested policy copy,Billing
+971811672226,6,480263,1,0,1,2,Requested help navigating website,Sales
+662404612663,0,,0,0,0,0,,
+446541780720,1,354612,1,1,1,5,Issue resolved but took multiple contacts,Service
+899551058791,3,144655,0,1,1,2,Inquiry about claim status,Policy
+155405125209,1,140528,1,1,0,4,Requested help navigating website,Service
+415322208589,2,835255,1,1,1,2,Inquiry about claim status,Website
+855186478032,0,,0,0,0,0,,
+32856902065,0,,0,0,0,0,,
+424183628132,0,,0,0,0,0,,
+512683313680,12,766597,1,0,0,5,Billing correction processed after delay,Service
+981048833791,0,,0,0,0,0,,
+31635999158,0,,0,0,0,0,,
+884216124901,4,588383,1,0,1,5,Claim required extra documents; finally approved,Service
+301390721687,4,531330,0,0,1,2,Inquiry about claim status,Policy
+305167955631,2,728943,0,0,1,5,Billing correction processed after delay,Website
+335291410808,0,,0,0,0,0,,
+303685484612,0,,0,0,0,0,,
+310390253035,0,,0,0,0,0,,
+699199633541,12,889531,0,0,1,5,Website login intermittently failed,Billing
+150003420000,0,,0,0,0,0,,
+681527359123,4,954392,0,0,1,6,Policy wording unclear; support clarified,Policy
+554744024436,4,615001,1,1,1,6,Issue resolved but took multiple contacts,Service
+33135329220,12,143027,1,1,0,1,Small typo on policy corrected,Billing
+705067296113,0,,0,0,0,0,,
+437593555012,12,144086,1,0,0,3,Requested help navigating website,Sales
+213868544877,10,898728,1,0,1,4,Requested policy copy,Claims
+16016946983,0,,0,0,0,0,,
+318299556497,12,812142,1,1,0,7,Sales promised callback; received next day,Billing
+828964614886,10,443495,1,0,0,5,Policy wording unclear; support clarified,Sales
+762389416772,2,371405,1,0,0,8,Repeated billing errors,Website
+906925927383,1,941753,1,1,0,10,Claim denied without clear reason,Service
+151243049096,8,998315,0,0,1,3,Minor question about billing cycle,Claims
+502820512212,7,437997,1,1,1,3,Minor question about billing cycle,Claims
+795617283273,1,587917,0,1,1,9,Customer rep not supportive,Sales
+878088660050,0,,0,0,0,0,,
+239938076685,10,611329,0,1,1,10,Aggressive upselling and poor follow-up,Claims
+995632928106,0,,0,0,0,0,,
+848495775053,7,108918,1,1,0,4,Minor question about billing cycle,Service
+896314389982,0,,0,0,0,0,,
+194829360213,0,,0,0,0,0,,
+465634617267,12,619239,1,0,0,6,Sales promised callback; received next day,Service
+797710356745,12,746998,1,0,1,1,Minor question about billing cycle,Policy
+311192012419,6,861847,1,0,1,3,Updated contact preferences,Service
+495579477961,0,,0,0,0,0,,
+822499963264,0,,0,0,0,0,,
+35645225470,4,467824,1,0,0,3,Small typo on policy corrected,Website
+432747980012,0,,0,0,0,0,,
+790137927300,0,,0,0,0,0,,
+972540918896,8,975917,1,0,0,4,Small typo on policy corrected,Policy
+644203201206,0,,0,0,0,0,,
+194614333171,1,199205,1,0,0,2,Minor question about billing cycle,Website
+335203017370,6,492743,0,1,0,2,Requested help navigating website,Service
+712425451116,0,,0,0,0,0,,
+29720140212,12,124074,1,1,1,9,Aggressive upselling and poor follow-up,Website
+445976650371,5,189418,1,1,1,3,Requested help navigating website,Sales
+233941439342,4,435648,1,0,0,4,Minor question about billing cycle,Website
+810060487686,4,116216,1,0,0,2,Inquiry about claim status,Sales
+292468306094,4,235486,0,0,1,3,Requested policy copy,Policy
+784491598651,12,365833,1,0,0,5,Policy wording unclear; support clarified,Sales
+143257418959,2,199431,1,1,1,7,Website login intermittently failed,Website
+568857772626,11,676314,1,1,1,5,Sales promised callback; received next day,Website
+101747205099,6,653293,1,0,1,6,Policy wording unclear; support clarified,Website
+88201619098,6,830599,1,1,0,10,Customer rep not supportive,Claims
+604914834622,0,,0,0,0,0,,
+81176566914,9,287242,1,1,1,2,Updated contact preferences,Sales
+360790047294,8,578884,1,0,0,5,Website login intermittently failed,Sales
+317441898934,5,504745,0,0,1,8,Website frequently down during checkout,Billing
+290386217527,0,,0,0,0,0,,
+672436070528,3,466172,0,1,1,1,Small typo on policy corrected,Website
+303009297398,11,485837,1,0,0,5,Billing correction processed after delay,Policy
+867084603075,3,196013,0,0,1,10,Website frequently down during checkout,Policy
+7330144488,4,546757,1,1,1,5,Sales promised callback; received next day,Service
+290431442702,8,939778,0,1,1,5,Sales promised callback; received next day,Service
+707318870008,0,,0,0,0,0,,
+651406326330,0,,0,0,0,0,,
+558628066334,12,824377,1,0,0,5,Claim required extra documents; finally approved,Website
+321551621209,0,,0,0,0,0,,
+898005728734,1,477745,0,1,1,9,Repeated billing errors,Website
+347047939615,0,,0,0,0,0,,
+149903918532,2,387897,1,0,1,4,Inquiry about claim status,Policy
+520859306499,0,,0,0,0,0,,
+821819147207,8,496202,1,1,1,3,Requested help navigating website,Policy
+822387023638,7,585552,0,1,0,10,Aggressive upselling and poor follow-up,Claims
+266557556230,12,714799,1,0,0,4,Requested policy copy,Billing
+290047827551,1,235584,1,0,1,3,Requested policy copy,Billing
+819817208108,0,,0,0,0,0,,
+36646067842,7,605681,0,1,1,7,Issue resolved but took multiple contacts,Service
+914704965878,4,191144,1,0,0,6,Claim required extra documents; finally approved,Claims
+72805679105,11,552621,0,0,1,7,Issue resolved but took multiple contacts,Billing
+225975892745,0,,0,0,0,0,,
+150005383127,8,306311,1,1,1,2,Small typo on policy corrected,Billing
+520622259278,6,991759,1,1,0,10,Repeated billing errors,Sales
+17635008716,2,671454,1,1,0,1,Minor question about billing cycle,Website
+721814174127,8,390736,0,1,0,3,Updated contact preferences,Billing
+70840670815,11,187539,1,0,1,1,Updated contact preferences,Website
+33748538893,0,,0,0,0,0,,
+202567216662,0,,0,0,0,0,,
+805954011575,2,837996,1,0,0,1,Updated contact preferences,Website
+489059257516,4,237754,0,0,1,6,Policy wording unclear; support clarified,Claims
+478353660990,7,631910,0,1,1,10,Claim denied without clear reason,Billing
+30845238629,8,893876,1,1,1,2,Small typo on policy corrected,Billing
+566834665921,4,947148,0,1,0,10,Claim denied without clear reason,Claims
+874641968252,3,498539,1,0,1,7,Policy wording unclear; support clarified,Website
+791710847142,0,,0,0,0,0,,
+594452142015,1,889805,0,0,1,2,Requested help navigating website,Website
+285721117342,0,,0,0,0,0,,
+798293336501,8,991378,0,0,1,3,Minor question about billing cycle,Sales
+521650113635,0,,0,0,0,0,,
+150145572641,0,,0,0,0,0,,
+657848012055,2,590562,0,1,0,2,Requested help navigating website,Website
+153589389746,0,,0,0,0,0,,
+160692443628,5,433312,1,1,0,8,Repeated billing errors,Website
+914531091491,0,,0,0,0,0,,
+756874825958,5,738307,0,0,1,2,Small typo on policy corrected,Policy
+641009122268,4,568320,1,1,0,9,Aggressive upselling and poor follow-up,Billing
+111957823962,10,687511,0,1,0,5,Claim required extra documents; finally approved,Website
+816048307379,3,520799,1,0,0,3,Requested policy copy,Website
+262259071336,3,613260,1,0,0,5,Website login intermittently failed,Sales
+412950765701,7,274275,1,0,1,10,Customer rep not supportive,Billing
+737560325779,0,,0,0,0,0,,
+739580084984,8,847254,0,0,1,9,Aggressive upselling and poor follow-up,Service
+962854743932,0,,0,0,0,0,,
+791068747155,4,499510,0,0,1,8,Long wait times and unresolved issue,Claims
+466858786304,2,249896,0,0,1,10,Long wait times and unresolved issue,Sales
+140721466986,0,,0,0,0,0,,
+690254689595,12,268711,1,1,1,5,Policy wording unclear; support clarified,Claims
+467903214835,0,,0,0,0,0,,
+320384165658,4,890727,1,1,0,4,Inquiry about claim status,Policy
+414218445813,10,439115,1,0,0,7,Policy wording unclear; support clarified,Sales
+562654248783,6,627648,1,0,0,2,Requested help navigating website,Service
+451774500096,7,787817,0,1,1,4,Requested help navigating website,Service
+876567349231,5,884422,0,1,0,7,Billing correction processed after delay,Billing
+65262679353,9,539927,1,0,0,10,Claim denied without clear reason,Sales
+643987121873,9,213656,0,1,0,2,Inquiry about claim status,Claims
+285371624968,0,,0,0,0,0,,
+563304544056,5,690700,0,1,0,3,Inquiry about claim status,Policy
+774947150205,0,,0,0,0,0,,
+33812589826,12,984430,1,0,0,2,Minor question about billing cycle,Sales
+597433048262,4,587632,1,0,0,1,Small typo on policy corrected,Service
+867432443743,10,951420,1,0,1,4,Requested policy copy,Service
+324686726640,8,330436,0,0,1,8,Claim denied without clear reason,Service
+705917194231,0,,0,0,0,0,,
+787312942806,0,,0,0,0,0,,
+427562081380,0,,0,0,0,0,,
+914105170530,11,198131,1,0,0,7,Policy wording unclear; support clarified,Website
+986231846073,0,,0,0,0,0,,
+413733093918,0,,0,0,0,0,,
+649464372678,12,825827,0,1,1,1,Minor question about billing cycle,Service
+574261411315,0,,0,0,0,0,,
+90169601361,0,,0,0,0,0,,
+678194014357,8,219120,0,1,0,5,Claim required extra documents; finally approved,Billing
+564263432193,0,,0,0,0,0,,
+717644294055,0,,0,0,0,0,,
+947352654192,0,,0,0,0,0,,
+540778613115,12,522035,0,0,1,7,Issue resolved but took multiple contacts,Claims
+589980740693,0,,0,0,0,0,,
+951510277077,8,847322,1,0,0,4,Minor question about billing cycle,Billing
+201046186426,2,306142,1,0,0,1,Requested help navigating website,Sales
+599360117707,0,,0,0,0,0,,
+687732374443,10,698161,1,1,0,8,Customer rep not supportive,Website
+768702368630,5,162164,0,1,1,3,Updated contact preferences,Claims
+286531087207,7,814479,1,0,0,6,Policy wording unclear; support clarified,Claims
+345349711612,5,729036,1,1,1,8,Repeated billing errors,Service
+919188839114,10,578484,0,1,1,4,Minor question about billing cycle,Service
+811771533460,5,205977,0,1,0,10,Claim denied without clear reason,Sales
+14703709230,0,,0,0,0,0,,
+968884279404,2,479430,1,0,1,3,Requested policy copy,Policy
+211887840772,1,255648,1,0,0,2,Requested policy copy,Billing
+58758427333,4,958920,0,0,1,3,Updated contact preferences,Claims
+146528310954,0,,0,0,0,0,,
+882036353758,8,105718,1,0,0,4,Requested policy copy,Policy
+611549257094,8,285012,1,0,0,7,Sales promised callback; received next day,Website
+91336325679,4,481721,0,0,1,5,Policy wording unclear; support clarified,Service
+125261002188,1,104163,1,0,0,4,Updated contact preferences,Claims
+39226119992,9,626277,1,1,0,6,Policy wording unclear; support clarified,Billing
+862621841409,8,780270,1,0,1,2,Minor question about billing cycle,Billing
+248957649985,0,,0,0,0,0,,
+250373794664,3,444474,1,1,1,9,Long wait times and unresolved issue,Claims
+992822057192,0,,0,0,0,0,,
+517426140654,9,459920,0,0,1,2,Inquiry about claim status,Service
+645397022740,0,,0,0,0,0,,
+825757241186,2,451629,1,1,0,3,Updated contact preferences,Policy
+481223213498,0,,0,0,0,0,,
+632456555605,8,830392,1,0,1,1,Updated contact preferences,Billing
+793103111934,0,,0,0,0,0,,
+445096980769,0,,0,0,0,0,,
+58999060950,3,803855,1,0,0,5,Sales promised callback; received next day,Website
+630502908859,2,565221,1,1,1,4,Inquiry about claim status,Service
+880755827543,0,,0,0,0,0,,
+175805847276,1,472466,1,0,1,3,Requested help navigating website,Service
+746123349950,6,305990,0,1,1,1,Requested policy copy,Policy
+802630098,3,197507,1,0,1,4,Requested policy copy,Policy
+292359696698,3,552048,1,1,1,5,Website login intermittently failed,Sales
+318167415519,7,596319,0,1,0,7,Policy wording unclear; support clarified,Billing
+356628865346,6,224976,1,0,0,2,Small typo on policy corrected,Billing
+471745244836,0,,0,0,0,0,,
+448928281613,7,552929,0,0,1,1,Requested help navigating website,Billing
+719002840708,0,,0,0,0,0,,
+990591247417,1,741789,1,1,1,9,Aggressive upselling and poor follow-up,Service
+666076237686,6,771840,1,1,1,2,Requested policy copy,Billing
+811292225263,0,,0,0,0,0,,
+98588469489,0,,0,0,0,0,,
+94435412997,0,,0,0,0,0,,
+637653866665,4,863209,1,0,1,9,Repeated billing errors,Service
+853763778644,8,300777,1,0,0,8,Website frequently down during checkout,Billing
+295595753557,8,808868,1,0,0,6,Policy wording unclear; support clarified,Billing
+400206888952,9,547359,0,1,0,7,Sales promised callback; received next day,Policy
+530727078562,0,,0,0,0,0,,
+822578049961,11,935181,1,0,0,7,Sales promised callback; received next day,Claims
+842246997510,7,142269,0,1,1,1,Updated contact preferences,Billing
+993130356843,8,667970,1,0,1,8,Customer rep not supportive,Claims
+753281906193,3,407804,1,1,1,10,Long wait times and unresolved issue,Service
+82450060001,0,,0,0,0,0,,
+938616200282,0,,0,0,0,0,,
+486544791192,0,,0,0,0,0,,
+369281740774,5,992582,0,1,0,7,Claim required extra documents; finally approved,Sales
+156899343898,3,999073,0,0,1,5,Billing correction processed after delay,Billing
+75007514007,6,588801,0,0,1,4,Minor question about billing cycle,Policy
+925244342401,0,,0,0,0,0,,
+639413395994,3,879419,1,0,1,5,Billing correction processed after delay,Website
+312921473959,11,145540,1,0,0,10,Repeated billing errors,Claims
+156917106125,5,352842,1,0,0,5,Website login intermittently failed,Service
+945052182449,1,225147,1,0,1,1,Inquiry about claim status,Service
+437226561956,0,,0,0,0,0,,
+455055284745,10,598427,0,1,1,5,Billing correction processed after delay,Sales
+828923784503,0,,0,0,0,0,,
+109689030949,0,,0,0,0,0,,
+16508318356,4,661294,1,1,1,1,Small typo on policy corrected,Website
+916458850550,10,405138,0,1,0,3,Minor question about billing cycle,Service
+803299683506,0,,0,0,0,0,,
+545202834414,0,,0,0,0,0,,
+403804813852,10,158401,0,0,1,10,Aggressive upselling and poor follow-up,Service
+209506603379,0,,0,0,0,0,,
+553018601354,0,,0,0,0,0,,
+413043208445,5,349717,1,0,1,1,Minor question about billing cycle,Billing
+643161015216,7,427699,1,0,0,9,Claim denied without clear reason,Claims
+192882700450,1,650503,1,0,1,6,Policy wording unclear; support clarified,Sales
+173874139070,11,601964,0,1,1,1,Small typo on policy corrected,Billing
+875099607417,10,983173,1,0,1,7,Issue resolved but took multiple contacts,Sales
+359531699144,0,,0,0,0,0,,
+941124237346,9,363021,1,0,0,1,Requested policy copy,Claims
+856853591426,2,849304,1,1,1,3,Small typo on policy corrected,Sales
+88874801165,9,106579,0,1,0,9,Claim denied without clear reason,Website
+613406829982,7,225261,1,1,1,10,Claim denied without clear reason,Sales
+607519677520,6,187688,0,1,0,4,Minor question about billing cycle,Sales
+526072446351,0,,0,0,0,0,,
+629038330416,0,,0,0,0,0,,
+134899586049,9,521475,0,0,1,5,Sales promised callback; received next day,Claims
+116133165729,4,882412,1,0,0,1,Minor question about billing cycle,Billing
+928318484166,11,459886,0,1,1,8,Long wait times and unresolved issue,Website
+44008759769,0,,0,0,0,0,,
+365082704634,0,,0,0,0,0,,
+198925962278,4,960959,1,0,0,8,Claim denied without clear reason,Sales
+426491813067,11,409413,1,1,1,7,Claim required extra documents; finally approved,Claims
+872442238910,0,,0,0,0,0,,
+647674378359,10,788896,1,1,0,2,Requested policy copy,Service
+72078778175,0,,0,0,0,0,,
+259461017133,11,667303,1,0,0,1,Minor question about billing cycle,Policy
+866186305158,1,777245,1,0,0,4,Minor question about billing cycle,Policy
+209189313347,2,444990,0,1,1,10,Claim denied without clear reason,Sales
+531108913576,12,626095,1,0,0,6,Billing correction processed after delay,Sales
+712563358093,2,297294,1,0,1,2,Requested policy copy,Service
+355474359799,9,476777,1,0,0,3,Updated contact preferences,Policy
+387573081113,7,456257,1,1,0,5,Issue resolved but took multiple contacts,Billing
+811969994444,0,,0,0,0,0,,
+44483606280,1,867499,1,0,0,10,Claim denied without clear reason,Service
+426568196561,0,,0,0,0,0,,
+163691744894,11,534467,1,0,0,6,Claim required extra documents; finally approved,Sales
+620905210103,0,,0,0,0,0,,
+308494110370,12,171819,1,1,0,1,Requested help navigating website,Sales
+838202600692,5,402197,1,0,0,2,Requested policy copy,Policy
+875346902871,8,967118,0,1,0,1,Minor question about billing cycle,Website
+69999313887,0,,0,0,0,0,,
+698983774650,2,958343,0,0,1,4,Minor question about billing cycle,Website
+682251805695,0,,0,0,0,0,,
+24819704161,0,,0,0,0,0,,
+84950864530,0,,0,0,0,0,,
+305861262729,0,,0,0,0,0,,
+190581988281,9,964118,1,1,1,6,Website login intermittently failed,Website
+33068871100,0,,0,0,0,0,,
+592648834293,10,750211,1,0,0,10,Website frequently down during checkout,Website
+789664923150,5,183649,1,0,0,2,Requested help navigating website,Policy
+463560905780,0,,0,0,0,0,,
+251739036623,0,,0,0,0,0,,
+626028949691,9,506989,0,1,0,7,Policy wording unclear; support clarified,Billing
+705726833138,3,700048,0,0,1,7,Policy wording unclear; support clarified,Claims
+170974580761,0,,0,0,0,0,,
+131482050052,0,,0,0,0,0,,
+425482274151,0,,0,0,0,0,,
+608438358723,9,473462,1,0,0,7,Policy wording unclear; support clarified,Service
+125944726633,0,,0,0,0,0,,
+372618044522,12,827990,1,1,0,4,Requested help navigating website,Policy
+59769291046,6,356368,1,0,0,7,Sales promised callback; received next day,Policy
+238624348519,12,497297,0,1,0,3,Updated contact preferences,Billing
+887845451045,12,454365,0,1,0,1,Requested help navigating website,Billing
+422825743479,11,518755,1,0,0,7,Policy wording unclear; support clarified,Service
+521389765864,1,650454,0,0,1,4,Minor question about billing cycle,Billing
+800628074352,0,,0,0,0,0,,
+760633183059,0,,0,0,0,0,,
+889034078523,2,301434,0,1,1,7,Issue resolved but took multiple contacts,Website
+589193573684,1,229851,0,0,1,7,Website login intermittently failed,Claims
+560509333931,8,853925,1,0,0,9,Customer rep not supportive,Sales
+616656348047,0,,0,0,0,0,,
+84794430577,0,,0,0,0,0,,
+843703951042,10,739551,1,0,0,8,Website frequently down during checkout,Policy
+292688295644,9,257468,1,1,0,3,Requested help navigating website,Billing
+701859216517,0,,0,0,0,0,,
+718589614001,9,429301,1,0,1,8,Customer rep not supportive,Claims
+379452341849,6,591181,0,1,0,5,Claim required extra documents; finally approved,Billing
+933047764030,0,,0,0,0,0,,
+165190662824,7,898906,0,1,0,9,Customer rep not supportive,Claims
+300005203871,10,775067,1,0,0,8,Repeated billing errors,Policy
+837426767529,1,228132,1,0,1,6,Claim required extra documents; finally approved,Billing
+352411122874,9,999782,1,1,0,9,Repeated billing errors,Service
+973428856900,6,274492,0,0,1,8,Customer rep not supportive,Service
+402010444758,0,,0,0,0,0,,
+425104448893,11,133285,0,0,1,6,Policy wording unclear; support clarified,Sales
+373901754780,10,356423,0,1,1,6,Policy wording unclear; support clarified,Service
