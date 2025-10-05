@@ -872,11 +872,11 @@ class CampaignStrategistAgent(BaseAgent):
 
         # Budget per agent based on AUM
         if avg_aum > 5000000:
-            budget_per_agent = 500
+            budget_per_agent = 120
         elif avg_aum > 2000000:
-            budget_per_agent = 250
+            budget_per_agent = 100
         else:
-            budget_per_agent = 150
+            budget_per_agent = 80
 
         total_budget = agent_count * budget_per_agent
 
