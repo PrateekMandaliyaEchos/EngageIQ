@@ -1,17 +1,24 @@
 # Project specific
-/data/
+backend/data/
 .env
+
+# Frontend specific (handled by frontend/.gitignore, but adding here for completeness)
+/frontend/node_modules/
+/frontend/dist/
+/frontend/dist-ssr/
 
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
+# Backend specific Python cache
+backend/src/**/__pycache__/
 *.so
 .Python
-/venv/
-/env/
-/.venv/
-/.env/
+backend/venv/
+backend/env/
+backend/.venv/
+backend/.env/
 build/
 develop-eggs/
 dist/
