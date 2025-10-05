@@ -149,6 +149,52 @@ class CampaignService:
             # Create new file with headers
             new_campaign_df.to_csv(self._campaigns_file, index=False)
 
+    def _persist_agent_profiles(self, campaign_id: str, results: Dict[str, Any]) -> None:
+        """
+        Persist agent profiles to JSON file for a specific campaign.
+        
+        Args:
+            campaign_id: Campaign identifier
+            results: Campaign execution results containing agent profiles
+        """
+        try:
+            # Extract agent profiles from ProfileGeneratorAgent results
+            profile_wrapper = results.get('ProfileGeneratorAgent', {})
+            
+            # The orchestrator wraps the result in a "profiles" key
+            profile_result = profile_wrapper.get('profiles', {})
+            
+            if not profile_result.get('success'):
+                print(f"Warning: No valid profile data found for campaign {campaign_id}")
+                return
+            
+            # Get agent profiles from the profile result
+            agent_profiles = profile_result.get('agent_profiles', [])
+            
+            if not agent_profiles:
+                print(f"Warning: No agent profiles found for campaign {campaign_id}")
+                return
+            
+            # Prepare data for JSON serialization
+            agent_profiles_data = {
+                "campaign_id": campaign_id,
+                "generated_at": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
+                "agent_profiles": agent_profiles,
+                "total_agents": len(agent_profiles)
+            }
+            
+            # Create agent profiles directory and file path
+            agent_profiles_dir = self._campaigns_file.parent / "agent_profiles"
+            agent_profiles_dir.mkdir(exist_ok=True)  # Create directory if it doesn't exist
+            agent_profiles_file = agent_profiles_dir / f"{campaign_id}.json"
+            
+            # Write to JSON file
+            with open(agent_profiles_file, 'w') as f:
+                json.dump(agent_profiles_data, f, indent=2, default=str)
+            
+        except Exception as e:
+            print(f"Warning: Failed to persist agent profiles for campaign {campaign_id}: {str(e)}")
+
     def get_all_campaigns(self) -> List[Dict[str, Any]]:
         """
         Retrieve all existing campaigns.
@@ -282,6 +328,9 @@ class CampaignService:
 
                     try:
                         self._persist_campaign(campaign_data)
+                        
+                        # Also persist agent profiles if available
+                        self._persist_agent_profiles(campaign_id, plan.results)
                     except Exception as e:
                         print(f"Warning: Campaign execution succeeded but persistence failed: {str(e)}")
 

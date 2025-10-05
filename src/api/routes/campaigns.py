@@ -288,3 +288,86 @@ async def get_campaign_result(campaign_id: str = Path(..., description="Campaign
             status_code=500,
             detail=f"Error retrieving campaign results: {str(e)}"
         )
+
+
+@router.get("/{campaign_id}/agent_profiles")
+async def get_campaign_agent_profiles(campaign_id: str = Path(..., description="Campaign ID")):
+    """
+    Get the agent profiles generated for a specific campaign.
+    
+    Args:
+        campaign_id: The ID of the campaign
+        
+    Returns:
+        JSON response with agent profiles list
+        
+    Example Response:
+    ```json
+    {
+        "campaign_id": "CAM123",
+        "total_agents": 150,
+        "agent_profiles": [
+            {
+                "agent_id": "12345",
+                "name": "John Doe",
+                "segment": "Independent Agents",
+                "aum": 2500000.0,
+                "nps_score": 8.5,
+                "tenure": 5.2,
+                "policies_sold": 12,
+                "age": 45,
+                "city": "New York",
+                "education": "BACHELOR",
+                "nps_feedback": "Great service and support"
+            }
+        ]
+    }
+    ```
+    """
+    try:
+        import json
+        from pathlib import Path
+        from src.core.config import get_settings
+        
+        # Get data path from settings
+        settings = get_settings()
+        data_location = settings._config.get('connectors', {}).get('csv', {}).get('location', './data')
+        agent_profiles_file = Path(data_location) / "agent_profiles" / f"{campaign_id}.json"
+        
+        # Check if agent profiles file exists
+        if not agent_profiles_file.exists():
+            raise HTTPException(
+                status_code=404,
+                detail=f"Agent profiles not found for campaign {campaign_id}. Campaign may not be completed yet."
+            )
+        
+        # Read agent profiles from JSON file
+        try:
+            with open(agent_profiles_file, 'r') as f:
+                agent_profiles_data = json.load(f)
+        except Exception as json_error:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Error reading agent profiles file: {str(json_error)}"
+            )
+        
+        # Validate the data structure
+        if not isinstance(agent_profiles_data, dict) or 'agent_profiles' not in agent_profiles_data:
+            raise HTTPException(
+                status_code=500,
+                detail="Invalid agent profiles data format"
+            )
+        
+        return {
+            "campaign_id": campaign_id,
+            "total_agents": len(agent_profiles_data.get('agent_profiles', [])),
+            "agent_profiles": agent_profiles_data.get('agent_profiles', [])
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error retrieving agent profiles: {str(e)}"
+        )
