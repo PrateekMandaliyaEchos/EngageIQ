@@ -132,7 +132,7 @@ class SegmentationAgent(BaseAgent):
         df = pd.DataFrame(sample_data)
         
         # Convert numeric columns properly
-        numeric_columns = ['AUM_SELFREPORTED', 'NPS_SCORE', 'AGENT_TENURE', 'NO_OF_UNIQUE_POLICIES_SOLD_LAST_12_MONTHS', 'COMPLAINTS_LAST_12_MONTHS']
+        numeric_columns = ['AUM_SELFREPORTED', 'NPS_SCORE', 'AGENT_TENURE', 'NO_OF_UNIQUE_POLICIES_SOLD_LAST_12_MONTHS', 'COMPLAINTS_LAST_12_MONTHS', 'PREMIUM_AMOUNT']
         for col in numeric_columns:
             if col in df.columns:
                 df[col] = pd.to_numeric(df[col], errors='coerce')

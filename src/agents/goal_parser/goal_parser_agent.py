@@ -95,6 +95,7 @@ Available fields for constraints:
 - AGENT_TENURE (numeric): Years with company
 - NO_OF_UNIQUE_POLICIES_SOLD_LAST_12_MONTHS (numeric): Policies sold
 - COMPLAINTS_LAST_12_MONTHS (numeric): Number of complaints
+- PREMIUM_AMOUNT (numeric): Premium amount generated
 - Age (numeric): Agent age
 - Segment (string): Agent segment (Independent Agents, Emerging Experts, etc.)
 
@@ -105,6 +106,8 @@ Guidelines for interpretation:
 - "active" or "productive" → NO_OF_UNIQUE_POLICIES_SOLD_LAST_12_MONTHS >= 5
 - "veteran" or "experienced" → AGENT_TENURE >= 10
 - "new" or "recent" → AGENT_TENURE < 2
+- "high premium" or "premium generators" → PREMIUM_AMOUNT > 75th percentile
+- "low premium" or "underperforming" → PREMIUM_AMOUNT < 25th percentile
 
 Return ONLY valid JSON with this structure:
 {{

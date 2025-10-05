@@ -355,6 +355,7 @@ class ProfileGeneratorAgent(BaseAgent):
                 "age": int(agent.get('Age', 0)) if pd.notna(agent.get('Age')) else 0,
                 "city": agent.get('CITY', 'Unknown'),
                 "education": agent.get('EDUCATION', 'Unknown'),
+                "premium_amount": float(agent.get('PREMIUM_AMOUNT', 0)) if pd.notna(agent.get('PREMIUM_AMOUNT')) else 0,
                 "nps_feedback": agent.get('NPS_FEEDBACK', 'No feedback available')
             }
             profiles.append(profile)

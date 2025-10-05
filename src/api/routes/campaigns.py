@@ -318,6 +318,7 @@ async def get_campaign_agent_profiles(campaign_id: str = Path(..., description="
                 "age": 45,
                 "city": "New York",
                 "education": "BACHELOR",
+                "premium_amount": 7500.0,
                 "nps_feedback": "Great service and support"
             }
         ]
