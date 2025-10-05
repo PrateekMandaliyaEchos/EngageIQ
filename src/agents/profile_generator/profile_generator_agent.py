@@ -63,8 +63,8 @@ class ProfileGeneratorAgent(BaseAgent):
             if not segmentation_results.get('success'):
                 raise ValueError("No valid segmentation results provided")
             
-            # Get filtered agent data
-            filtered_agents = segmentation_results.get('sample_filtered', [])
+            # Get filtered agent data - use all_filtered for profile generation
+            filtered_agents = segmentation_results.get('all_filtered', [])
             agent_ids = segmentation_results.get('agent_ids', [])
             
             if not filtered_agents:

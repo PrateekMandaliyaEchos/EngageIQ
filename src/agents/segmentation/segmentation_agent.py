@@ -71,8 +71,8 @@ class SegmentationAgent(BaseAgent):
             if hasattr(data_loader, 'data_cache') and 'agent_persona' in data_loader.data_cache:
                 agent_df = data_loader.data_cache['agent_persona']
             else:
-                # Fallback to sample data if full dataset not available in cache
-                agent_df = self._convert_to_dataframe(data_result['metadata']['sample_data'])
+                # Load the full dataset directly instead of using sample data
+                agent_df = data_loader._load_agent_persona_data()
             
             # Apply segmentation criteria
             filtered_agents = self._apply_criteria(agent_df, criteria)
@@ -85,6 +85,13 @@ class SegmentationAgent(BaseAgent):
             if 'AGENT_ID' in filtered_agents.columns:
                 agent_ids = [int(x) if pd.notna(x) else None for x in filtered_agents['AGENT_ID'].tolist()]
             
+            # Prepare all filtered agents for profile generation
+            all_filtered = []
+            if len(filtered_agents) > 0:
+                all_filtered_df = filtered_agents.fillna("N/A")
+                all_filtered = all_filtered_df.to_dict('records')
+            
+            # Also prepare a small sample for display purposes
             sample_filtered = []
             if len(filtered_agents) > 0:
                 sample_df = filtered_agents.head(5).fillna("N/A")
@@ -97,7 +104,8 @@ class SegmentationAgent(BaseAgent):
                 "agent_ids": agent_ids,
                 "criteria_applied": criteria,
                 "statistics": stats,
-                "sample_filtered": sample_filtered
+                "all_filtered": all_filtered,  # All filtered agents for profile generation
+                "sample_filtered": sample_filtered  # Small sample for display
             }
             
         except Exception as e:
