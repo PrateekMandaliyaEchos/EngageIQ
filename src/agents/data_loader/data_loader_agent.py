@@ -13,12 +13,12 @@ class DataLoaderAgent(BaseAgent):
     Data Loader Agent that loads unified insurance agent population data.
     
     Responsibilities:
-    1. Load the unified Agent_persona.csv file (contains all agent data)
+    1. Load the unified Agent Persona.csv file (contains all agent data)
     2. Return structured DataFrame with complete agent records
     3. Handle data validation and error cases
     
     Note: All previously separate data sources (complaints, discovery, infutor, 
-    policy data, survey data) are now unified in the single Agent_persona.csv file.
+    policy data, survey data) are now unified in the single Agent Persona.csv file.
     """
 
     def __init__(self, config: Dict[str, Any]):
@@ -37,7 +37,7 @@ class DataLoaderAgent(BaseAgent):
         
     def process(self, message: Message) -> Dict[str, Any]:
         """
-        Load agent data from the unified Agent_persona.csv file.
+        Load agent data from the unified Agent Persona.csv file.
         
         Args:
             message: Message containing data source preferences (include_additional is ignored)
@@ -77,7 +77,7 @@ class DataLoaderAgent(BaseAgent):
     def _load_agent_persona_data(self) -> pd.DataFrame:
         """
         Load the unified agent persona CSV file containing all agent data.
-        
+
         This file now includes all previously separate data sources:
         - Agent persona information
         - Complaints data
@@ -85,18 +85,26 @@ class DataLoaderAgent(BaseAgent):
         - Infutor data
         - Policy data
         - Survey data
-        
+
         Returns:
             DataFrame with complete unified agent data
         """
         # Get data path from config
         data_sources = self.settings.data_sources
         csv_config = self.settings.get_connector_config('csv')
-        data_path = Path(csv_config.get('location', './data'))
-        
+        data_location = csv_config.get('location', './data')
+
+        # Make path absolute relative to project root
+        if not Path(data_location).is_absolute():
+            # Get project root (parent of src directory)
+            project_root = Path(__file__).parent.parent.parent.parent
+            data_path = project_root / data_location
+        else:
+            data_path = Path(data_location)
+
         # Handle the actual filename with spaces
         agent_file = data_path / "Agent_persona.csv"
-        
+
         if not agent_file.exists():
             raise FileNotFoundError(f"Agent persona file not found: {agent_file}")
         

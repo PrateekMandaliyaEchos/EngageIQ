@@ -69,54 +69,20 @@ class CampaignStrategistAgent(BaseAgent):
             insights = profiles.get('insights', {})
             segment_description = profiles.get('segment_description', '')
             agent_profiles = profiles.get('agent_profiles', [])
-            
-            # Generate campaign strategy components
-            messaging_strategy = self._generate_messaging_strategy(
-                goal, criteria, segment_summary, statistics, insights
-            )
-            
-            channel_recommendations = self._recommend_channels(
-                statistics, insights, agent_profiles
-            )
-            
-            timing_strategy = self._generate_timing_strategy(
-                criteria, statistics, agent_profiles
-            )
-            
-            budget_recommendations = self._generate_budget_recommendations(
-                segment_summary, statistics
-            )
-            
-            success_metrics = self._define_success_metrics(
-                criteria, segment_summary
-            )
-            
-            # Generate comprehensive strategy using LLM
-            overall_strategy = self._generate_overall_strategy(
-                goal, segment_summary, insights, messaging_strategy,
-                channel_recommendations, timing_strategy
-            )
-            
-            return {
-                "success": True,
-                "campaign_strategy": {
-                    "objective": criteria.get('objective', 'unknown'),
-                    "target_segment": segment_summary,
-                    "expected_reach": segment_summary.get('total_agents', 0),
-                    "overall_strategy": overall_strategy,
-                    "messaging": messaging_strategy,
-                    "channels": channel_recommendations,
-                    "timing": timing_strategy,
-                    "budget": budget_recommendations,
-                    "success_metrics": success_metrics,
-                    "implementation_plan": self._generate_implementation_plan(
-                        messaging_strategy, channel_recommendations, timing_strategy
-                    )
-                },
-                "confidence_score": self._calculate_confidence_score(
-                    segment_summary, statistics, insights
+            segments_breakdown = profiles.get('segments_breakdown', {})
+
+            # Check if we have segment breakdown for per-segment strategies
+            if segments_breakdown:
+                # Generate strategy per segment
+                return self._generate_per_segment_strategies(
+                    goal, criteria, segment_summary, segments_breakdown
                 )
-            }
+            else:
+                # Fallback: Generate single unified strategy (original behavior)
+                return self._generate_unified_strategy(
+                    goal, criteria, segment_summary, statistics, insights,
+                    segment_description, agent_profiles
+                )
             
         except Exception as e:
             return {
@@ -674,4 +640,325 @@ class CampaignStrategistAgent(BaseAgent):
             "average_response_time": "2-3 days",
             "satisfaction_baseline": "75%",
             "monthly_interaction_frequency": "2-3 times"
+        }
+
+    def _generate_per_segment_strategies(
+        self,
+        goal: str,
+        criteria: Dict[str, Any],
+        segment_summary: Dict[str, Any],
+        segments_breakdown: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        Generate separate campaign strategy for each customer segment.
+
+        Args:
+            goal: Campaign goal
+            criteria: Parsed criteria
+            segment_summary: Overall segment summary
+            segments_breakdown: Per-segment breakdowns from ProfileGenerator
+
+        Returns:
+            Campaign strategies per segment
+        """
+        segment_strategies = {}
+
+        for segment_name, segment_data in segments_breakdown.items():
+            # Generate strategy for this segment
+            strategy = self._generate_single_segment_strategy(
+                segment_name, segment_data, goal, criteria, segment_summary
+            )
+            segment_strategies[segment_name] = strategy
+
+        return {
+            "success": True,
+            "objective": criteria.get('objective', 'unknown'),
+            "total_agents": segment_summary.get('total_agents', 0),
+            "segment_strategies": segment_strategies,
+            "confidence_score": self._calculate_overall_confidence(segments_breakdown)
+        }
+
+    def _generate_single_segment_strategy(
+        self,
+        segment_name: str,
+        segment_data: Dict[str, Any],
+        goal: str,
+        criteria: Dict[str, Any],
+        overall_summary: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        Generate campaign strategy for a single customer segment.
+
+        Args:
+            segment_name: Name of the segment
+            segment_data: Segment-specific data and statistics
+            goal: Campaign goal
+            criteria: Parsed criteria
+            overall_summary: Overall campaign summary
+
+        Returns:
+            Strategy for this segment
+        """
+        stats = segment_data['statistics']
+        insights = segment_data['insights']
+        agent_count = segment_data['agent_count']
+
+        # Generate strategy components for this segment
+        messaging = self._generate_segment_messaging(segment_name, stats, criteria)
+        channels = self._generate_segment_channels(segment_name, stats)
+        budget = self._generate_segment_budget(agent_count, stats)
+
+        # Generate LLM-powered strategy for this segment
+        segment_strategy = self._generate_segment_llm_strategy(
+            segment_name, segment_data, goal, criteria
+        )
+
+        return {
+            "segment_name": segment_name,
+            "agent_count": agent_count,
+            "percentage_of_campaign": segment_data['percentage_of_total'],
+            "strategy_narrative": segment_strategy,
+            "messaging": messaging,
+            "channels": channels,
+            "budget": budget,
+            "key_insights": insights
+        }
+
+    def _generate_segment_llm_strategy(
+        self,
+        segment_name: str,
+        segment_data: Dict[str, Any],
+        goal: str,
+        criteria: Dict[str, Any]
+    ) -> str:
+        """
+        Generate LLM-powered strategy narrative for a specific segment.
+
+        Args:
+            segment_name: Customer segment name
+            segment_data: Segment statistics and insights
+            goal: Campaign goal
+            criteria: Campaign criteria
+
+        Returns:
+            Strategy narrative string
+        """
+        stats = segment_data['statistics']
+        insights = segment_data['insights']
+        agent_count = segment_data['agent_count']
+
+        # Build segment characteristics description
+        segment_characteristics = {
+            "Independent Agents": "value autonomy, flexibility, and self-directed business models",
+            "Emerging Experts": "are building expertise, seek growth opportunities and professional development",
+            "Accomplished Professionals": "have established practices, value sophisticated solutions and recognition",
+            "Comfortable Retirees": "prioritize stability, long-term relationships, and legacy preservation"
+        }
+
+        characteristics = segment_characteristics.get(segment_name, "have unique needs and preferences")
+
+        # Extract purchase habits for personalization
+        top_habits = stats.get('top_purchase_habits', [])
+        purchase_habits_detail = stats.get('purchase_habits', {})
+
+        # Pick dominant habit (highest scoring)
+        dominant_habit = top_habits[0] if top_habits else None
+
+        # Build habits summary
+        habits_text = f"Dominant interest: {dominant_habit}" if dominant_habit else "No strong purchase habits"
+
+        # Create tagline based on dominant habit
+        habit_taglines = {
+            'fitness': 'Fitness Enthusiasts',
+            'travel': 'Travel Seekers',
+            'computers': 'Tech Savvy',
+            'apparel': 'Style Conscious',
+            'others': 'Diverse Interests'
+        }
+        segment_tagline = habit_taglines.get(dominant_habit, 'Balanced Profile')
+
+        # Determine sales milestone based on tenure and current performance
+        avg_tenure = stats.get('tenure', {}).get('mean', 0)
+        avg_policies = stats.get('sales_performance', {}).get('mean', 0)
+
+        prompt = f"""
+        Brief campaign strategy for "{segment_name}" ({segment_tagline}).
+
+        DATA: {agent_count} agents | AUM: ${stats.get('aum', {}).get('mean', 0):,.0f} | NPS: {stats.get('nps', {}).get('mean', 0):.1f} | Tenure: {avg_tenure:.1f}y | Sales: {avg_policies:.1f}
+        INTEREST: {habits_text}
+        GOAL: {criteria.get('objective', 'unknown')}
+
+        **Profile Summary**
+        [1 sentence mentioning their {dominant_habit if dominant_habit else 'interest'} preference + key challenge/opportunity]
+
+        **Engagement Tactics**
+
+        1. Performance Incentive: [Milestone] → [Reward $100-200]
+           Milestones: New agents (<2y): "2 policies in 60 days" | Mid (2-5y): "5 policies in Q4" | Vets (5+y): "$500K AUM"
+           Rewards by interest:
+           - fitness: $150 gym membership, fitness tracker + gear, sports tickets
+           - travel: $200 travel voucher, premium luggage, hotel gift card
+           - computers: Wireless headphones, smart watch, tech accessories bundle
+           - apparel: $150 clothing allowance, designer accessories
+           - none: $150 gift card, cash bonus
+
+        2. Training: [Pick one based on tenure {avg_tenure:.1f}y]
+           New: Sales fundamentals, 1-1 coaching | Mid: Product certification, leadership workshop | Vet: Executive masterclass
+
+        3. Recognition: [Pick one based on segment]
+           New: New agent spotlight | Mid: Regional leaderboard, peer network | Vet: Advisory board invite, achievement award
+
+        Keep it concise. One line per tactic.
+        """
+
+        try:
+            strategy = self.llm.query(
+                prompt=prompt,
+                system="You are an expert insurance marketing strategist specializing in agent segmentation and personalized campaign strategies."
+            )
+            return strategy
+        except Exception as e:
+            return f"Strategy for {segment_name}: {agent_count} agents with avg AUM ${stats.get('aum', {}).get('mean', 0):,.0f}. Focus on segment-specific needs and {criteria.get('objective', 'engagement')}."
+
+    def _generate_segment_messaging(self, segment_name: str, stats: Dict[str, Any], criteria: Dict[str, Any]) -> Dict[str, Any]:
+        """Generate messaging strategy for specific segment."""
+        objective = criteria.get('objective', 'retention')
+
+        # Segment-specific messaging themes
+        messaging_by_segment = {
+            "Independent Agents": {
+                "tone": "empowering, flexible, results-oriented",
+                "key_message": "Your independence, our support",
+                "hooks": ["autonomy", "flexibility", "partnership", "results"]
+            },
+            "Emerging Experts": {
+                "tone": "motivational, educational, growth-focused",
+                "key_message": "Accelerate your path to excellence",
+                "hooks": ["growth", "learning", "mentorship", "advancement"]
+            },
+            "Accomplished Professionals": {
+                "tone": "sophisticated, exclusive, prestigious",
+                "key_message": "Recognition for your achievements",
+                "hooks": ["prestige", "sophistication", "legacy", "excellence"]
+            },
+            "Comfortable Retirees": {
+                "tone": "reassuring, stable, appreciative",
+                "key_message": "Honoring your legacy, securing your future",
+                "hooks": ["stability", "legacy", "appreciation", "security"]
+            }
+        }
+
+        return messaging_by_segment.get(segment_name, {
+            "tone": "professional, respectful",
+            "key_message": "Partnering for success",
+            "hooks": ["partnership", "trust", "value"]
+        })
+
+    def _generate_segment_channels(self, segment_name: str, stats: Dict[str, Any]) -> List[str]:
+        """Recommend channels for specific segment."""
+        # Segment-specific channel preferences
+        channels_by_segment = {
+            "Independent Agents": ["email", "mobile_app", "self-service_portal"],
+            "Emerging Experts": ["webinars", "training", "email", "social_media"],
+            "Accomplished Professionals": ["phone", "executive_events", "email", "direct_mail"],
+            "Comfortable Retirees": ["phone", "direct_mail", "in_person_meetings"]
+        }
+
+        return channels_by_segment.get(segment_name, ["email", "phone"])
+
+    def _generate_segment_budget(self, agent_count: int, stats: Dict[str, Any]) -> Dict[str, Any]:
+        """Generate budget for specific segment."""
+        avg_aum = stats.get('aum', {}).get('mean', 0)
+
+        # Budget per agent based on AUM
+        if avg_aum > 5000000:
+            budget_per_agent = 500
+        elif avg_aum > 2000000:
+            budget_per_agent = 250
+        else:
+            budget_per_agent = 150
+
+        total_budget = agent_count * budget_per_agent
+
+        return {
+            "total_budget": total_budget,
+            "budget_per_agent": budget_per_agent,
+            "rationale": f"Budget based on segment AUM (${avg_aum:,.0f} avg)"
+        }
+
+    def _calculate_overall_confidence(self, segments_breakdown: Dict[str, Any]) -> float:
+        """Calculate overall confidence score across all segments."""
+        if not segments_breakdown:
+            return 0.5
+
+        # Higher confidence for larger, more balanced segments
+        segment_counts = [data['agent_count'] for data in segments_breakdown.values()]
+        total_agents = sum(segment_counts)
+
+        if total_agents > 10:
+            return 0.8
+        elif total_agents > 5:
+            return 0.7
+        else:
+            return 0.6
+
+    def _generate_unified_strategy(
+        self,
+        goal: str,
+        criteria: Dict[str, Any],
+        segment_summary: Dict[str, Any],
+        statistics: Dict[str, Any],
+        insights: Dict[str, Any],
+        segment_description: str,
+        agent_profiles: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
+        """
+        Generate single unified strategy (original behavior - fallback when no segment breakdown).
+        """
+        # Generate campaign strategy components (original logic)
+        messaging_strategy = self._generate_messaging_strategy(
+            goal, criteria, segment_summary, statistics, insights
+        )
+
+        channel_recommendations = self._recommend_channels(
+            statistics, insights, agent_profiles
+        )
+
+        timing_strategy = self._generate_timing_strategy(
+            criteria, statistics, agent_profiles
+        )
+
+        budget_recommendations = self._generate_budget_recommendations(
+            segment_summary, statistics
+        )
+
+        success_metrics = self._define_success_metrics(
+            criteria, segment_summary
+        )
+
+        # Generate comprehensive strategy using LLM
+        overall_strategy = self._generate_overall_strategy(
+            goal, segment_summary, insights, messaging_strategy,
+            channel_recommendations, timing_strategy
+        )
+
+        return {
+            "success": True,
+            "campaign_strategy": {
+                "objective": criteria.get('objective', 'unknown'),
+                "target_segment": segment_summary,
+                "expected_reach": segment_summary.get('total_agents', 0),
+                "overall_strategy": overall_strategy,
+                "messaging": messaging_strategy,
+                "channels": channel_recommendations,
+                "timing": timing_strategy,
+                "budget": budget_recommendations,
+                "success_metrics": success_metrics,
+                "implementation_plan": self._generate_implementation_plan(
+                    messaging_strategy, channel_recommendations, timing_strategy
+                )
+            },
+            "confidence_score": self._calculate_confidence_score(
+                segment_summary, statistics, insights
+            )
         }

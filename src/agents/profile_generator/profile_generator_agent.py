@@ -86,7 +86,10 @@ class ProfileGeneratorAgent(BaseAgent):
             
             # Generate individual agent profiles
             agent_profiles = self._generate_agent_profiles(agent_df)
-            
+
+            # Generate segment-specific breakdowns
+            segments_breakdown = self._generate_segments_breakdown(agent_df, criteria, statistics)
+
             return {
                 "success": True,
                 "segment_summary": {
@@ -99,6 +102,7 @@ class ProfileGeneratorAgent(BaseAgent):
                 "insights": insights,
                 "segment_description": segment_description,
                 "agent_profiles": agent_profiles,
+                "segments_breakdown": segments_breakdown,
                 "recommendations": self._generate_recommendations(statistics, insights, criteria)
             }
             
@@ -406,5 +410,131 @@ class ProfileGeneratorAgent(BaseAgent):
             recommendations.append("Acquisition campaign: Target similar high-potential agents")
         elif objective == 'upsell':
             recommendations.append("Upsell campaign: Introduce premium products to existing relationships")
-        
+
         return recommendations[:5]  # Limit to top 5 recommendations
+
+    def _generate_segments_breakdown(self, df: pd.DataFrame, criteria: Dict[str, Any],
+                                     overall_statistics: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Generate segment-specific breakdowns for each customer segment.
+
+        Segments: Independent Agents, Emerging Experts, Accomplished Professionals, Comfortable Retirees
+
+        Args:
+            df: Filtered agent DataFrame
+            criteria: Campaign criteria
+            overall_statistics: Overall statistics for all agents
+
+        Returns:
+            Dictionary with per-segment profiles and statistics
+        """
+        segments_breakdown = {}
+
+        if 'Segment' not in df.columns or df.empty:
+            return segments_breakdown
+
+        # Group by Segment
+        for segment_name, segment_df in df.groupby('Segment'):
+            if segment_df.empty:
+                continue
+
+            segment_breakdown = {
+                "segment_name": segment_name,
+                "agent_count": len(segment_df),
+                "percentage_of_total": float(len(segment_df) / len(df) * 100) if len(df) > 0 else 0,
+                "agent_ids": [int(x) for x in segment_df['AGENT_ID'].tolist() if pd.notna(x)],
+                "statistics": {},
+                "insights": []
+            }
+
+            # Calculate segment-specific statistics
+            segment_stats = {}
+
+            # AUM statistics
+            if 'AUM_SELFREPORTED' in segment_df.columns:
+                aum_data = pd.to_numeric(segment_df['AUM_SELFREPORTED'], errors='coerce')
+                segment_stats['aum'] = {
+                    "mean": float(aum_data.mean()) if not aum_data.empty and pd.notna(aum_data.mean()) else 0,
+                    "median": float(aum_data.median()) if not aum_data.empty and pd.notna(aum_data.median()) else 0,
+                    "min": float(aum_data.min()) if not aum_data.empty and pd.notna(aum_data.min()) else 0,
+                    "max": float(aum_data.max()) if not aum_data.empty and pd.notna(aum_data.max()) else 0
+                }
+
+            # NPS statistics
+            if 'NPS_SCORE' in segment_df.columns:
+                nps_data = pd.to_numeric(segment_df['NPS_SCORE'], errors='coerce')
+                segment_stats['nps'] = {
+                    "mean": float(nps_data.mean()) if not nps_data.empty and pd.notna(nps_data.mean()) else 0,
+                    "median": float(nps_data.median()) if not nps_data.empty and pd.notna(nps_data.median()) else 0,
+                    "promoters": int((nps_data >= 9).sum()),
+                    "passives": int(((nps_data >= 7) & (nps_data <= 8)).sum()),
+                    "detractors": int((nps_data <= 6).sum())
+                }
+
+            # Tenure statistics
+            if 'AGENT_TENURE' in segment_df.columns:
+                tenure_data = pd.to_numeric(segment_df['AGENT_TENURE'], errors='coerce')
+                segment_stats['tenure'] = {
+                    "mean": float(tenure_data.mean()) if not tenure_data.empty and pd.notna(tenure_data.mean()) else 0,
+                    "median": float(tenure_data.median()) if not tenure_data.empty and pd.notna(tenure_data.median()) else 0,
+                    "min": float(tenure_data.min()) if not tenure_data.empty and pd.notna(tenure_data.min()) else 0,
+                    "max": float(tenure_data.max()) if not tenure_data.empty and pd.notna(tenure_data.max()) else 0
+                }
+
+            # Sales performance
+            if 'NO_OF_UNIQUE_POLICIES_SOLD_LAST_12_MONTHS' in segment_df.columns:
+                sales_data = pd.to_numeric(segment_df['NO_OF_UNIQUE_POLICIES_SOLD_LAST_12_MONTHS'], errors='coerce')
+                segment_stats['sales_performance'] = {
+                    "mean": float(sales_data.mean()) if not sales_data.empty and pd.notna(sales_data.mean()) else 0,
+                    "total_policies": int(sales_data.sum()) if not sales_data.empty and pd.notna(sales_data.sum()) else 0
+                }
+
+            # Purchase habits analysis
+            purchase_habit_columns = [
+                'PURCHASE_HABITS_APPAREL',
+                'PURCHASE_HABITS_COMPUTERS',
+                'PURCHASE_HABITS_FITNESS',
+                'PURCHASE_HABITS_TRAVEL',
+                'PURCHASE_HABITS_OTHERS'
+            ]
+
+            purchase_habits = {}
+            for col in purchase_habit_columns:
+                if col in segment_df.columns:
+                    habit_data = pd.to_numeric(segment_df[col], errors='coerce')
+                    habit_name = col.replace('PURCHASE_HABITS_', '').lower()
+                    purchase_habits[habit_name] = {
+                        "mean": float(habit_data.mean()) if not habit_data.empty and pd.notna(habit_data.mean()) else 0,
+                        "count": int((habit_data > 0).sum()) if not habit_data.empty else 0
+                    }
+
+            # Identify top purchase habits for this segment
+            if purchase_habits:
+                segment_stats['purchase_habits'] = purchase_habits
+                # Find top 2 habits by mean value
+                sorted_habits = sorted(purchase_habits.items(), key=lambda x: x[1]['mean'], reverse=True)
+                segment_stats['top_purchase_habits'] = [habit[0] for habit in sorted_habits[:2] if habit[1]['mean'] > 0]
+
+            segment_breakdown['statistics'] = segment_stats
+
+            # Generate segment-specific insights
+            insights = []
+            insights.append(f"{segment_name}: {len(segment_df)} agents ({segment_breakdown['percentage_of_total']:.1f}% of filtered population)")
+
+            if segment_stats.get('aum'):
+                avg_aum = segment_stats['aum']['mean']
+                insights.append(f"Average AUM: ${avg_aum:,.0f}")
+
+            if segment_stats.get('nps'):
+                avg_nps = segment_stats['nps']['mean']
+                insights.append(f"Average NPS: {avg_nps:.1f}")
+
+            if segment_stats.get('tenure'):
+                avg_tenure = segment_stats['tenure']['mean']
+                insights.append(f"Average tenure: {avg_tenure:.1f} years")
+
+            segment_breakdown['insights'] = insights
+
+            segments_breakdown[segment_name] = segment_breakdown
+
+        return segments_breakdown

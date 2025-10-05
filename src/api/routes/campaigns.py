@@ -252,14 +252,35 @@ async def get_campaign_result(campaign_id: str = Path(..., description="Campaign
         # Return results
         results = status.get('results', {})
 
-        # Format results to match expected structure
-        strategy = results.get('CampaignStrategistAgent', {}).get('strategy', {})
+        # Debug: Print what we're getting
+        import json
+        print(f"DEBUG - Full status: {json.dumps(status, indent=2, default=str)}")
+        print(f"DEBUG - Results keys: {results.keys()}")
+        print(f"DEBUG - CampaignStrategistAgent result: {results.get('CampaignStrategistAgent', {})}")
 
-        return {
-            "success": True,
-            "campaign_strategy": strategy.get('campaign_strategy', {}),
-            "confidence_score": strategy.get('confidence_score', 0.0)
-        }
+        strategist_result = results.get('CampaignStrategistAgent', {})
+
+        # Unwrap if wrapped in 'strategy' key (from orchestrator)
+        if 'strategy' in strategist_result:
+            strategist_result = strategist_result['strategy']
+
+        # Check if we have segment-based strategies or unified strategy
+        if 'segment_strategies' in strategist_result:
+            # New per-segment strategy format
+            return {
+                "success": True,
+                "objective": strategist_result.get('objective', 'unknown'),
+                "total_agents": strategist_result.get('total_agents', 0),
+                "segment_strategies": strategist_result.get('segment_strategies', {}),
+                "confidence_score": strategist_result.get('confidence_score', 0.0)
+            }
+        else:
+            # Legacy unified strategy format
+            return {
+                "success": True,
+                "campaign_strategy": strategist_result.get('campaign_strategy', {}),
+                "confidence_score": strategist_result.get('confidence_score', 0.0)
+            }
     except HTTPException:
         raise
     except Exception as e:
