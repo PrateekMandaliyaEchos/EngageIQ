@@ -5,7 +5,7 @@ export const ROUTES = {
 } as const;
 
 export const API_ENDPOINTS = {
-  BASE_URL: '/api/v1',
+  BASE_URL: 'http://localhost:8000/api/v1',
   CAMPAIGNS: {
     CREATE: '/campaigns/create',
     PLAN: (id: string) => `/campaigns/${id}/plan`,

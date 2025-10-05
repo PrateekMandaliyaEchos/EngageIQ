@@ -13,7 +13,7 @@ import {
   Cell
 } from 'recharts';
 import { apiService, type SegmentStrategy, type AgentProfilesResponse, type AgentProfile } from '../../services/api';
-import { getSegmentColor, formatCurrency, computeIncrementalRevenue } from '../../utils';
+import { getSegmentColor, formatCurrency, computeIncrementalRevenue, formatPercentage } from '../../utils';
 import StrategyNarrative from '../common/StrategyNarrative';
 import { useAveragePoliciesBySegment, useAveragePremiumBySegment } from '../../hooks';
 
@@ -273,7 +273,7 @@ const CampaignResults: React.FC<CampaignResultsProps> = ({
                           <Cell key={`cell-${index}`} fill={getSegmentColor(segment.segment_name)} />
                         ))}
                       </Pie>
-                      <Tooltip />
+                      <Tooltip formatter={(value) => [formatPercentage(Number(value), 2), 'Percentage']} />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
@@ -298,7 +298,14 @@ const CampaignResults: React.FC<CampaignResultsProps> = ({
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="segment" />
                     <YAxis />
-                    <Tooltip formatter={(value, name) => [name === 'budget' ? `$${value.toLocaleString()}` : value, name === 'budget' ? 'Budget' : name === 'agents' ? 'Agents' : 'Percentage']} />
+                    <Tooltip formatter={(value, name) => [
+                      name === 'budget'
+                        ? `$${Number(value).toLocaleString()}`
+                        : name === 'percentage'
+                          ? formatPercentage(Number(value), 2)
+                          : String(value),
+                      name === 'budget' ? 'Budget' : name === 'agents' ? 'Agents' : 'Percentage']}
+                    />
                     <Bar dataKey="budget" fill="#4f46e5" />
                   </BarChart>
                 </ResponsiveContainer>
@@ -327,7 +334,7 @@ const CampaignResults: React.FC<CampaignResultsProps> = ({
                         {segment.agent_count} agents
                       </span>
                       <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full">
-                        {segment.percentage_of_campaign}% of campaign
+                        {formatPercentage(segment.percentage_of_campaign, 2)} of campaign
                       </span>
                       <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full">
                         {formatCurrency(segment.budget.total_budget)} budget

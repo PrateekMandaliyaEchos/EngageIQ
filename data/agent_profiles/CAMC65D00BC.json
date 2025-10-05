@@ -1,0 +1,72 @@
+{
+  "campaign_id": "CAMC65D00BC",
+  "generated_at": "2025-10-05T10:45:59Z",
+  "agent_profiles": [
+    {
+      "agent_id": 605372009,
+      "name": "GERARDO JARAMILLO",
+      "segment": "Independent Agents",
+      "aum": 1140884.0,
+      "nps_score": 9.0,
+      "tenure": 12.1,
+      "policies_sold": 1,
+      "age": 44,
+      "city": "El Paso",
+      "education": "MASTER",
+      "nps_feedback": "Policy benefits exceeded my expectations and premiums are reasonable."
+    },
+    {
+      "agent_id": 983815774,
+      "name": "RAVI POLAMARASETTY",
+      "segment": "Emerging Experts",
+      "aum": 3379656.0,
+      "nps_score": 10.0,
+      "tenure": 18.1,
+      "policies_sold": 2,
+      "age": 47,
+      "city": "SCHAUMBURG",
+      "education": "MASTER",
+      "nps_feedback": "Policy benefits exceeded my expectations and premiums are reasonable."
+    },
+    {
+      "agent_id": 1684129038,
+      "name": "JACQUELINE OLIVER",
+      "segment": "Emerging Experts",
+      "aum": 8490088.0,
+      "nps_score": 8.0,
+      "tenure": 16.1,
+      "policies_sold": 0,
+      "age": 44,
+      "city": "SEAGOVILLE",
+      "education": "BACHELOR",
+      "nps_feedback": "Signed up mainly because of a friend's recommendation. So far OK."
+    },
+    {
+      "agent_id": 1759552254,
+      "name": "TODD BAUMAN",
+      "segment": "Independent Agents",
+      "aum": 2304382.0,
+      "nps_score": 8.0,
+      "tenure": 3.5,
+      "policies_sold": 3,
+      "age": 60,
+      "city": "ARLINGTON HEIGHTS",
+      "education": "HIGH_SCHOOL",
+      "nps_feedback": "My questions were answered, but agent was a bit formal."
+    },
+    {
+      "agent_id": 1770438417,
+      "name": "DAVID VENTE",
+      "segment": "Independent Agents",
+      "aum": 23395705.0,
+      "nps_score": 9.0,
+      "tenure": 5.2,
+      "policies_sold": 1,
+      "age": 27,
+      "city": "TAMPA",
+      "education": "MASTER",
+      "nps_feedback": "The online support chat is responsive and helped me update my beneficiaries in minutes."
+    }
+  ],
+  "total_agents": 5
+}

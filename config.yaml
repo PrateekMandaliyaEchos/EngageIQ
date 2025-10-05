@@ -1,0 +1,84 @@
+app:
+  name: EngageIQ
+  version: 1.0.1
+  environment: development # development, staging, production
+  debug: true
+
+api:
+  host: 0.0.0.0
+  port: 8000
+  cors_origins:
+    - http://localhost:5173
+
+data:
+  sources:
+    agent_persona: "Agent_persona.csv"
+    campaigns: "campaigns.csv"
+  connector: csv # csv, s3, athena, postgresql, snowflake, bigquery
+
+connectors:
+  csv:
+    type: local_file
+    location: "./data"
+    delimiter: ","
+    encoding: "utf-8"
+    skip_rows: 0
+    cache_enabled: true
+    cache_ttl: 3600 # seconds
+
+  s3:
+    type: cloud_storage
+    provider: aws
+    region: us-east-1
+    bucket: engageiq-data-prod
+    prefix: "campaign-data/" # Optional folder path
+    credentials:
+      access_key_id: ${AWS_ACCESS_KEY_ID}
+      secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+    file_format: csv
+    compression: none # none, gzip, bzip2, snappy
+    options:
+      delimiter: ","
+      encoding: "utf-8"
+      skip_rows: 0
+    cache_enabled: true
+    cache_ttl: 7200
+    download_to_temp: true # Download to /tmp before processing
+    temp_dir: "/tmp/engageiq"
+
+llm:
+  default_provider: claude
+  providers:
+    claude:
+      api_key: ${ANTHROPIC_API_KEY} # From env var
+      model: claude-sonnet-4-20250514
+      max_tokens: 4000
+      temperature: 0.7
+    openai:
+      api_key: ${OPENAI_API_KEY}
+      model: gpt-4
+      max_tokens: 4000
+
+agents:
+  orchestrator:
+    enabled: true
+    timeout: 300 # seconds
+    max_retries: 3
+  goal_parser:
+    enabled: true
+    provider: claude
+    temperature: 0.5
+  data_loader:
+    enabled: true
+    cache_enabled: true
+    include_additional: true
+  segmentation:
+    enabled: true
+    default_method: rule_based # rule_based, clustering, hybrid
+  profiler:
+    enabled: true
+    calculate_lift: true
+  campaign_strategist:
+    enabled: true
+    provider: claude
+    temperature: 0.8
