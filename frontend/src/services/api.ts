@@ -192,11 +192,35 @@ export const apiService = {
     return list;
   },
 
-  async getAgentProfiles(campaignId: string): Promise<AgentProfilesResponse> {
+  async getAgentProfiles(campaignId: string, retryCount: number = 0): Promise<AgentProfilesResponse> {
     const response = await fetch(`${API_ENDPOINTS.BASE_URL}${API_ENDPOINTS.CAMPAIGNS.AGENT_PROFILES(campaignId)}`);
-    if (!response.ok) {
-      throw new Error(`No Agent Found for this campaign`);
+    
+    if (response.status === 202) {
+      // Agent profiles are being generated, retry after a delay
+      if (retryCount < 60) { // Max 60 retries (5 minutes total)
+        // Progressive delay: start with 2s, increase to 5s after 10 retries
+        const delay = retryCount < 10 ? 2000 : 5000;
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return this.getAgentProfiles(campaignId, retryCount + 1);
+      } else {
+        throw new Error('Agent profiles are taking longer than expected. Please refresh the page.');
+      }
     }
+    
+    if (!response.ok) {
+      if (response.status === 500) {
+        // Server error, retry after a delay
+        if (retryCount < 20) { // Max 20 retries for 500 errors
+          await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds
+          return this.getAgentProfiles(campaignId, retryCount + 1);
+        } else {
+          throw new Error('Agent profiles are temporarily unavailable. Please try again later.');
+        }
+      } else {
+        throw new Error(`No Agent Found for this campaign`);
+      }
+    }
+    
     const data: AgentProfilesResponse = await response.json();
     return data;
   },

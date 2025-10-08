@@ -1,6 +1,8 @@
 # Project specific
 backend/data/
 .env
+.env.local
+.env.production
 
 # Frontend specific (handled by frontend/.gitignore, but adding here for completeness)
 /frontend/node_modules/
@@ -15,6 +17,7 @@ __pycache__/
 backend/src/**/__pycache__/
 *.so
 .Python
+venv/
 backend/venv/
 backend/env/
 backend/.venv/

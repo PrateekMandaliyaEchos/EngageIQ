@@ -87,19 +87,30 @@ async def get_all_campaigns() -> List[Campaign]:
     ```
     """
     try:
+        print("🔍 Getting campaigns from service...")
         campaigns_data = campaign_service.get_all_campaigns()
+        print(f"📊 Retrieved {len(campaigns_data) if campaigns_data else 0} campaigns from service")
         
         # Handle case where no campaigns exist
         if not campaigns_data:
+            print("ℹ️  No campaigns found, returning empty list")
             return []
         
         # Convert dictionaries to Pydantic models
         campaigns = []
-        for campaign_dict in campaigns_data:
+        for i, campaign_dict in enumerate(campaigns_data):
             try:
+                print(f"🔄 Processing campaign {i+1}: {campaign_dict.get('campaign_id', 'Unknown ID')}")
+                
                 # Ensure proper type conversion for numeric fields
                 if 'segment_size' in campaign_dict:
                     campaign_dict['segment_size'] = int(campaign_dict['segment_size'])
+                
+                # Convert datetime objects to strings
+                if 'created_at' in campaign_dict and hasattr(campaign_dict['created_at'], 'isoformat'):
+                    campaign_dict['created_at'] = campaign_dict['created_at'].isoformat()
+                if 'updated_at' in campaign_dict and hasattr(campaign_dict['updated_at'], 'isoformat'):
+                    campaign_dict['updated_at'] = campaign_dict['updated_at'].isoformat()
                 
                 # Ensure target_criteria is a dict (should already be parsed by service)
                 if isinstance(campaign_dict.get('target_criteria'), str):
@@ -108,14 +119,21 @@ async def get_all_campaigns() -> List[Campaign]:
                 
                 campaign = Campaign(**campaign_dict)
                 campaigns.append(campaign)
+                print(f"✅ Successfully processed campaign {i+1}")
             except Exception as validation_error:
                 # Log the validation error but continue with other campaigns
-                print(f"Warning: Skipping invalid campaign data: {validation_error}")
-                print(f"Campaign data: {campaign_dict}")
+                print(f"❌ Warning: Skipping invalid campaign data: {validation_error}")
+                print(f"📋 Campaign data: {campaign_dict}")
+                import traceback
+                traceback.print_exc()
                 continue
         
+        print(f"🎉 Successfully processed {len(campaigns)} campaigns")
         return campaigns
     except Exception as e:
+        print(f"❌ Error retrieving campaigns: {str(e)}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(
             status_code=500,
             detail=f"Error retrieving campaigns: {str(e)}"
@@ -233,45 +251,79 @@ async def get_campaign_result(campaign_id: str = Path(..., description="Campaign
         Campaign results (only available when status=completed)
     """
     try:
-        status = campaign_service.get_campaign_status(campaign_id)
-
-        if not status.get('success'):
+        print(f"🔍 Getting campaign result for: {campaign_id}")
+        
+        # Get campaign data from database (replacing campaign_service approach)
+        from src.core.config import get_settings
+        from src.connectors.factory import create_connector
+        
+        settings = get_settings()
+        connector_type = settings.data_connector
+        connector_config = settings.get_connector_config(connector_type)
+        connector = create_connector(connector_type, connector_config)
+        
+        # Get campaign from database
+        campaigns = connector.get_campaigns()
+        campaign_data = next((c for c in campaigns if c['campaign_id'] == campaign_id), None)
+        
+        if not campaign_data:
+            print(f"❌ Campaign not found in database: {campaign_id}")
             raise HTTPException(
                 status_code=404,
-                detail=status.get('error', 'Campaign not found')
+                detail=f"Campaign {campaign_id} not found"
             )
-
-        # Check if execution is complete
-        if status.get('status') != 'completed':
+        
+        print(f"✅ Campaign found in database: {campaign_id}")
+        
+        # Check if execution is complete (treat "planned" as completed for now)
+        campaign_status = campaign_data.get('status', 'unknown')
+        if campaign_status not in ['planned', 'completed']:
             return {
                 "success": False,
-                "message": f"Campaign execution in progress (status: {status.get('status')})",
-                "status": status.get('status')
+                "message": f"Campaign execution in progress (status: {campaign_status})",
+                "status": campaign_status
             }
 
-        # Return results
-        results = status.get('results', {})
+        # Get the actual LLM-generated results from the campaign_results table
+        campaign_result = connector.get_campaign_result(campaign_id)
+        
+        if not campaign_result:
+            return {
+                "success": False,
+                "message": "Campaign LLM results not found. Campaign may not be completed yet.",
+                "status": campaign_status
+            }
+        
+        llm_results = campaign_result.get('llm_results', {})
 
-        # Debug: Print what we're getting
+        # Debug: Print what we're getting (preserving your original debug logic)
         import json
-        print(f"DEBUG - Full status: {json.dumps(status, indent=2, default=str)}")
-        print(f"DEBUG - Results keys: {results.keys()}")
-        print(f"DEBUG - CampaignStrategistAgent result: {results.get('CampaignStrategistAgent', {})}")
+        print(f"DEBUG - Campaign data from DB: {json.dumps(campaign_data, indent=2, default=str)}")
+        print(f"DEBUG - LLM results keys: {llm_results.keys()}")
+        print(f"DEBUG - CampaignStrategistAgent result: {llm_results.get('CampaignStrategistAgent', {})}")
 
-        strategist_result = results.get('CampaignStrategistAgent', {})
+        strategist_result = llm_results.get('CampaignStrategistAgent', {})
 
         # Unwrap if wrapped in 'strategy' key (from orchestrator)
         if 'strategy' in strategist_result:
             strategist_result = strategist_result['strategy']
 
-        # Check if we have segment-based strategies or unified strategy
+        # Check if we have segment-based strategies or unified strategy (preserving your original logic)
         if 'segment_strategies' in strategist_result:
             # New per-segment strategy format
+            segment_strategies = strategist_result.get('segment_strategies', {})
+            
+            # Calculate total agents by summing agent_count from all segments
+            total_agents = 0
+            for segment_name, segment_data in segment_strategies.items():
+                if isinstance(segment_data, dict) and 'agent_count' in segment_data:
+                    total_agents += segment_data.get('agent_count', 0)
+            
             return {
                 "success": True,
                 "objective": strategist_result.get('objective', 'unknown'),
-                "total_agents": strategist_result.get('total_agents', 0),
-                "segment_strategies": strategist_result.get('segment_strategies', {}),
+                "total_agents": total_agents,
+                "segment_strategies": segment_strategies,
                 "confidence_score": strategist_result.get('confidence_score', 0.0)
             }
         else:
@@ -326,31 +378,63 @@ async def get_campaign_agent_profiles(campaign_id: str = Path(..., description="
     ```
     """
     try:
-        import json
-        from pathlib import Path
         from src.core.config import get_settings
+        from src.connectors.factory import create_connector
         
-        # Get data path from settings
+        # Get connector from settings
         settings = get_settings()
-        data_location = settings._config.get('connectors', {}).get('csv', {}).get('location', './data')
-        agent_profiles_file = Path(data_location) / "agent_profiles" / f"{campaign_id}.json"
+        connector_type = settings.data_connector
+        connector_config = settings.get_connector_config(connector_type)
+        connector = create_connector(connector_type, connector_config)
         
-        # Check if agent profiles file exists
-        if not agent_profiles_file.exists():
-            raise HTTPException(
-                status_code=404,
-                detail=f"Agent profiles not found for campaign {campaign_id}. Campaign may not be completed yet."
-            )
-        
-        # Read agent profiles from JSON file
-        try:
-            with open(agent_profiles_file, 'r') as f:
-                agent_profiles_data = json.load(f)
-        except Exception as json_error:
-            raise HTTPException(
-                status_code=500,
-                detail=f"Error reading agent profiles file: {str(json_error)}"
-            )
+        # Check if we're using PostgreSQL connector
+        if hasattr(connector, 'get_agent_profiles'):
+            # Get from database
+            try:
+                agent_profiles = connector.get_agent_profiles(campaign_id)
+                if not agent_profiles:
+                    # Return a more specific error that the frontend can handle
+                    raise HTTPException(
+                        status_code=202,  # Accepted but not ready yet
+                        detail=f"Agent profiles are being generated for campaign {campaign_id}. Please try again in a few moments."
+                    )
+                
+                # Format response to match expected structure
+                agent_profiles_data = {
+                    "campaign_id": campaign_id,
+                    "total_agents": len(agent_profiles),
+                    "agent_profiles": agent_profiles
+                }
+            except HTTPException:
+                # Re-raise HTTP exceptions as-is
+                raise
+            except Exception as db_error:
+                # For other database errors, return a 500 but with a more user-friendly message
+                print(f"❌ Database error in agent_profiles: {str(db_error)}")
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"Agent profiles are temporarily unavailable. Please try again in a few moments."
+                )
+        else:
+            # Fallback to JSON file
+            # Get agent profiles file path
+            agent_profiles_file = f"agent_profiles/{campaign_id}.json"
+            
+            # Check if agent profiles file exists
+            if not connector.file_exists(agent_profiles_file):
+                raise HTTPException(
+                    status_code=404,
+                    detail=f"Agent profiles not found for campaign {campaign_id}. Campaign may not be completed yet."
+                )
+            
+            # Read agent profiles from JSON file
+            try:
+                agent_profiles_data = connector.read_json(agent_profiles_file)
+            except Exception as json_error:
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"Error reading agent profiles file: {str(json_error)}"
+                )
         
         # Validate the data structure
         if not isinstance(agent_profiles_data, dict) or 'agent_profiles' not in agent_profiles_data:

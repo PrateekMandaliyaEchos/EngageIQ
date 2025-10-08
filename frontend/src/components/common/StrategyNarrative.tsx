@@ -9,7 +9,7 @@ interface StrategyNarrativeProps {
 
 const StrategyNarrative: React.FC<StrategyNarrativeProps> = ({ strategyNarrative }) => {
   // Preprocess the strategy narrative to replace numbered lists with markdown syntax
-  const processed = strategyNarrative.replace(/^(\d+)\.\s([^\n]+)/gm, (match, number, content) => {
+  const processed = strategyNarrative.replace(/^(\d+)\.\s([^\n]+)/gm, (_, number, content) => {
     return `${number}. ${content}`; // You may modify this further if needed
   });
 

@@ -1,20 +1,20 @@
 app:
   name: EngageIQ
   version: 1.0.1
-  environment: development # development, staging, production
-  debug: true
+  environment: production
+  debug: false
 
 api:
   host: 0.0.0.0
   port: 8000
   cors_origins:
-    - http://localhost:5173
+    - https://your-app-name.onrender.com
 
 data:
   sources:
     agent_persona: "Agent_persona.csv"
     campaigns: "campaigns.csv"
-  connector: postgres # csv, s3, postgres
+  connector: postgres
 
 connectors:
   csv:
@@ -24,18 +24,19 @@ connectors:
     encoding: "utf-8"
     skip_rows: 0
     cache_enabled: true
-    cache_ttl: 3600 # seconds
+    cache_ttl: 3600
 
   postgres:
     type: database
     provider: postgresql
-    host: ${POSTGRES_HOST}
-    port: ${POSTGRES_PORT}
-    database: ${POSTGRES_DB}
-    user: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
-    # Alternative: use DATABASE_URL for Neon
-    # url: ${DATABASE_URL}
+    # Use DATABASE_URL for Neon (recommended)
+    url: ${DATABASE_URL}
+    # Alternative: individual components
+    # host: ${POSTGRES_HOST}
+    # port: ${POSTGRES_PORT}
+    # database: ${POSTGRES_DB}
+    # user: ${POSTGRES_USER}
+    # password: ${POSTGRES_PASSWORD}
     pool_size: 10
     max_overflow: 20
     pool_pre_ping: true
@@ -45,7 +46,7 @@ llm:
   default_provider: claude
   providers:
     claude:
-      api_key: ${ANTHROPIC_API_KEY} # From env var
+      api_key: ${ANTHROPIC_API_KEY}
       model: claude-sonnet-4-20250514
       max_tokens: 4000
       temperature: 0.7
@@ -57,7 +58,7 @@ llm:
 agents:
   orchestrator:
     enabled: true
-    timeout: 300 # seconds
+    timeout: 300
     max_retries: 3
   goal_parser:
     enabled: true
@@ -69,7 +70,7 @@ agents:
     include_additional: true
   segmentation:
     enabled: true
-    default_method: rule_based # rule_based, clustering, hybrid
+    default_method: rule_based
   profiler:
     enabled: true
     calculate_lift: true

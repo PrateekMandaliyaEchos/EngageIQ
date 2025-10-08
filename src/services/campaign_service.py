@@ -11,6 +11,7 @@ from concurrent.futures import ThreadPoolExecutor
 from src.agents import OrchestratorAgent, Message
 from src.core.config import get_settings
 from src.core.planner import CampaignPlanner
+from src.connectors.factory import create_connector
 
 
 def _serialize_dataframes(obj: Any) -> Any:
@@ -57,12 +58,14 @@ class CampaignService:
         # Thread pool for async execution
         self.executor = ThreadPoolExecutor(max_workers=5)
 
-        # Get the path components from configuration
-        data_location = settings._config.get('connectors', {}).get('csv', {}).get('location', './data')
-        campaigns_file = settings._config.get('data', {}).get('sources', {}).get('campaigns', 'campaigns.csv')
-
-        # Construct the full path
-        self._campaigns_file = Path(data_location) / campaigns_file
+        # Initialize data connector
+        connector_type = settings.data_connector
+        connector_config = settings.get_connector_config(connector_type)
+        self.connector = create_connector(connector_type, connector_config)
+        
+        # Get campaigns filename from config
+        campaigns_file = settings.data_sources.get('campaigns', 'campaigns.csv')
+        self._campaigns_file = campaigns_file
         self._required_fields = ['campaign_id', 'name', 'goal', 'target_criteria', 'segment_size', 'created_at', 'status']
 
     def _generate_campaign_name(self, goal: str) -> str:
@@ -122,7 +125,7 @@ class CampaignService:
 
     def _persist_campaign(self, campaign_data: Dict[str, Any]) -> None:
         """
-        Persist a campaign to CSV storage.
+        Persist a campaign to storage.
         
         Args:
             campaign_data: Campaign data to persist
@@ -135,23 +138,29 @@ class CampaignService:
         if missing_fields:
             raise ValueError(f"Missing required fields: {', '.join(missing_fields)}")
         
-        # Ensure target_criteria is JSON string
-        if isinstance(campaign_data['target_criteria'], dict):
-            campaign_data['target_criteria'] = json.dumps(campaign_data['target_criteria'])
-        
-        # Create DataFrame for new campaign
-        new_campaign_df = pd.DataFrame([campaign_data])
-        
-        if self._campaigns_file.exists():
-            # Append to existing file
-            new_campaign_df.to_csv(self._campaigns_file, mode='a', header=False, index=False)
+        # Check if we're using PostgreSQL connector
+        if hasattr(self.connector, 'insert_campaign'):
+            # Insert into database
+            self.connector.insert_campaign(campaign_data)
         else:
-            # Create new file with headers
-            new_campaign_df.to_csv(self._campaigns_file, index=False)
+            # Fallback to CSV file
+            # Ensure target_criteria is JSON string
+            if isinstance(campaign_data['target_criteria'], dict):
+                campaign_data['target_criteria'] = json.dumps(campaign_data['target_criteria'])
+            
+            # Create DataFrame for new campaign
+            new_campaign_df = pd.DataFrame([campaign_data])
+            
+            if self.connector.file_exists(self._campaigns_file):
+                # Append to existing file
+                self.connector.write_csv(new_campaign_df, self._campaigns_file, mode='a', header=False, index=False)
+            else:
+                # Create new file with headers
+                self.connector.write_csv(new_campaign_df, self._campaigns_file, index=False)
 
     def _persist_agent_profiles(self, campaign_id: str, results: Dict[str, Any]) -> None:
         """
-        Persist agent profiles to JSON file for a specific campaign.
+        Persist agent profiles to database or JSON file for a specific campaign.
         
         Args:
             campaign_id: Campaign identifier
@@ -175,25 +184,56 @@ class CampaignService:
                 print(f"Warning: No agent profiles found for campaign {campaign_id}")
                 return
             
-            # Prepare data for JSON serialization
-            agent_profiles_data = {
-                "campaign_id": campaign_id,
-                "generated_at": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
-                "agent_profiles": agent_profiles,
-                "total_agents": len(agent_profiles)
-            }
-            
-            # Create agent profiles directory and file path
-            agent_profiles_dir = self._campaigns_file.parent / "agent_profiles"
-            agent_profiles_dir.mkdir(exist_ok=True)  # Create directory if it doesn't exist
-            agent_profiles_file = agent_profiles_dir / f"{campaign_id}.json"
-            
-            # Write to JSON file
-            with open(agent_profiles_file, 'w') as f:
-                json.dump(agent_profiles_data, f, indent=2, default=str)
+            # Check if we're using PostgreSQL connector
+            if hasattr(self.connector, 'insert_agent_profiles'):
+                # Insert into database
+                self.connector.insert_agent_profiles(campaign_id, agent_profiles)
+            else:
+                # Fallback to JSON file
+                # Prepare data for JSON serialization
+                agent_profiles_data = {
+                    "campaign_id": campaign_id,
+                    "generated_at": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
+                    "agent_profiles": agent_profiles,
+                    "total_agents": len(agent_profiles)
+                }
+                
+                # Create agent profiles directory and file path
+                agent_profiles_dir = "agent_profiles"
+                agent_profiles_file = f"{agent_profiles_dir}/{campaign_id}.json"
+                
+                # Ensure directory exists
+                self.connector.create_directory(agent_profiles_dir)
+                
+                # Write to JSON file using connector
+                self.connector.write_json(agent_profiles_data, agent_profiles_file, indent=2, default=str)
             
         except Exception as e:
             print(f"Warning: Failed to persist agent profiles for campaign {campaign_id}: {str(e)}")
+
+    def _persist_llm_results(self, campaign_id: str, results: Dict[str, Any]) -> None:
+        """
+        Persist complete LLM-generated results to campaign_results table.
+        
+        Args:
+            campaign_id: Campaign identifier
+            results: Complete LLM execution results from all agents
+        """
+        try:
+            # Get campaign name from the plan
+            plan = self.planner.get_plan(campaign_id)
+            campaign_name = plan.campaign_name if plan else f"Campaign {campaign_id}"
+            
+            # Check if we're using PostgreSQL connector with the new method
+            if hasattr(self.connector, 'insert_campaign_result'):
+                # Store complete LLM results in campaign_results table
+                self.connector.insert_campaign_result(campaign_id, campaign_name, results)
+                print(f"✅ LLM results persisted to campaign_results table for campaign {campaign_id}")
+            else:
+                print(f"⚠️  PostgreSQL connector not available, LLM results not persisted for campaign {campaign_id}")
+                
+        except Exception as e:
+            print(f"Warning: Failed to persist LLM results for campaign {campaign_id}: {str(e)}")
 
     def get_all_campaigns(self) -> List[Dict[str, Any]]:
         """
@@ -208,44 +248,69 @@ class CampaignService:
             >>> print(f"Found {len(campaigns)} campaigns")
         """
         try:
-            # Read campaigns CSV from the instance path
-            if not self._campaigns_file.exists():
-                return []
+            print("🔍 CampaignService: Getting all campaigns...")
+            print(f"📊 Connector type: {type(self.connector).__name__}")
+            print(f"📊 Has get_campaigns method: {hasattr(self.connector, 'get_campaigns')}")
+            
+            # Check if we're using PostgreSQL connector
+            if hasattr(self.connector, 'get_campaigns'):
+                print("🗄️  Using PostgreSQL connector")
+                # Get from database
+                campaigns = self.connector.get_campaigns()
+                print(f"📊 Retrieved {len(campaigns) if campaigns else 0} campaigns from database")
+            else:
+                print("📁 Using CSV connector fallback")
+                # Fallback to CSV file
+                # Check if campaigns file exists
+                if not self.connector.file_exists(self._campaigns_file):
+                    print(f"❌ Campaigns file not found: {self._campaigns_file}")
+                    return []
+                    
+                print(f"📁 Reading campaigns from: {self._campaigns_file}")
+                # Read campaigns CSV with error handling
+                try:
+                    df = self.connector.read_csv(
+                        self._campaigns_file,
+                        delimiter=',',
+                        quotechar='"',
+                        escapechar='\\',
+                        on_bad_lines='skip',  # Skip malformed lines instead of failing
+                        low_memory=False
+                    )
+                except Exception as csv_error:
+                    print(f"⚠️  CSV read failed with pandas engine: {csv_error}")
+                    # If pandas fails, try with more lenient settings
+                    df = self.connector.read_csv(
+                        self._campaigns_file,
+                        delimiter=',',
+                        quotechar='"',
+                        on_bad_lines='skip',
+                        engine='python',  # Use Python engine for better error handling
+                        low_memory=False
+                    )
                 
-            # Read campaigns CSV with error handling
-            try:
-                df = pd.read_csv(
-                    self._campaigns_file,
-                    delimiter=',',
-                    quotechar='"',
-                    escapechar='\\',
-                    on_bad_lines='skip',  # Skip malformed lines instead of failing
-                    low_memory=False
-                )
-            except Exception as csv_error:
-                # If pandas fails, try with more lenient settings
-                df = pd.read_csv(
-                    self._campaigns_file,
-                    delimiter=',',
-                    quotechar='"',
-                    on_bad_lines='skip',
-                    engine='python',  # Use Python engine for better error handling
-                    low_memory=False
-                )
-            
-            # Convert DataFrame to list of dicts
-            campaigns = df.to_dict('records')
-            
-            # Parse JSON strings in target_criteria to actual dictionaries
-            for campaign in campaigns:
-                if isinstance(campaign['target_criteria'], str):
-                    campaign['target_criteria'] = json.loads(campaign['target_criteria'])
+                print(f"📊 CSV loaded with {len(df)} rows")
+                # Convert DataFrame to list of dicts
+                campaigns = df.to_dict('records')
+                
+                # Parse JSON strings in target_criteria to actual dictionaries
+                for campaign in campaigns:
+                    if isinstance(campaign.get('target_criteria'), str):
+                        try:
+                            campaign['target_criteria'] = json.loads(campaign['target_criteria'])
+                        except (json.JSONDecodeError, TypeError):
+                            # If it's not valid JSON, keep as is
+                            pass
             
             # Serialize any DataFrames to prevent Pydantic serialization errors
             campaigns = _serialize_dataframes(campaigns)
+            print(f"🎉 Successfully processed {len(campaigns)} campaigns")
             
             return campaigns
         except Exception as e:
+            print(f"❌ Error in get_all_campaigns: {str(e)}")
+            import traceback
+            traceback.print_exc()
             raise Exception(f"Error reading campaigns: {str(e)}")
 
     def create_campaign(self, goal: str, campaign_name: Optional[str] = None) -> Dict[str, Any]:
@@ -312,7 +377,7 @@ class CampaignService:
             # Execute via orchestrator (respects BaseAgent interface)
             result = self.orchestrator.process(message)
 
-            # If successful, persist campaign to CSV
+            # If successful, persist campaign to database
             if result.get('success'):
                 plan = self.planner.get_plan(campaign_id)
                 if plan:
@@ -327,7 +392,11 @@ class CampaignService:
                     }
 
                     try:
+                        # Persist basic campaign data
                         self._persist_campaign(campaign_data)
+                        
+                        # Persist complete LLM results to database
+                        self._persist_llm_results(campaign_id, plan.results)
                         
                         # Also persist agent profiles if available
                         self._persist_agent_profiles(campaign_id, plan.results)

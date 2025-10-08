@@ -666,7 +666,7 @@ class CampaignStrategistAgent(BaseAgent):
         for segment_name, segment_data in segments_breakdown.items():
             # Generate strategy for this segment
             strategy = self._generate_single_segment_strategy(
-                segment_name, segment_data, goal, criteria, segment_summary
+                segment_name, segment_data, goal, criteria
             )
             segment_strategies[segment_name] = strategy
 
@@ -683,8 +683,7 @@ class CampaignStrategistAgent(BaseAgent):
         segment_name: str,
         segment_data: Dict[str, Any],
         goal: str,
-        criteria: Dict[str, Any],
-        overall_summary: Dict[str, Any]
+        criteria: Dict[str, Any]
     ) -> Dict[str, Any]:
         """
         Generate campaign strategy for a single customer segment.

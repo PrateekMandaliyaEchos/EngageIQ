@@ -40,8 +40,7 @@ const CampaignResults: React.FC<CampaignResultsProps> = ({
   campaignId,
   campaignName,
   onBack,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onCreateCampaign
+  onCreateCampaign: _onCreateCampaign
 }) => {
   const [campaignData, setCampaignData] = useState<any>(null);
   const [segments, setSegments] = useState<ProfileRow[]>([]);
@@ -73,6 +72,7 @@ const CampaignResults: React.FC<CampaignResultsProps> = ({
           const mapped: ProfileRow[] = (profiles.agent_profiles || []).map(p => ({ ...p }));
           setSegments(mapped);
         } catch (e) {
+          console.error('Error fetching agent profiles:', e);
           // Keep segments empty on failure
           setSegments([]);
         } finally {
@@ -357,7 +357,7 @@ const CampaignResults: React.FC<CampaignResultsProps> = ({
                             <span className="font-medium">Key Message:</span> {segment.messaging.key_message}
                           </p>
                           <div className="flex flex-wrap gap-1">
-                            {segment.messaging.hooks.map((hook, hookIndex) => (
+                            {(segment.messaging.hooks || []).map((hook, hookIndex) => (
                               <span key={hookIndex} className="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded">
                                 {hook}
                               </span>
@@ -369,7 +369,7 @@ const CampaignResults: React.FC<CampaignResultsProps> = ({
                       <div>
                         <h5 className="font-medium text-gray-700 mb-2">Channels</h5>
                         <div className="flex flex-wrap gap-2">
-                          {segment.channels.map((channel, channelIndex) => (
+                          {(segment.channels?.channel_sequence || []).map((channel, channelIndex) => (
                             <span key={channelIndex} className="bg-green-100 text-green-800 text-sm px-3 py-1 rounded-full">
                               {channel}
                             </span>
@@ -395,7 +395,7 @@ const CampaignResults: React.FC<CampaignResultsProps> = ({
                     <h5 className="font-medium text-gray-700 mb-2">Key Insights</h5>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
 
-                      {segment.key_insights.map((insight, insightIndex) => (
+                      {(segment.key_insights || []).map((insight, insightIndex) => (
                         <div key={insightIndex} className="bg-blue-50 p-2 rounded text-sm text-blue-800">
                           {insight}
                         </div>
@@ -456,10 +456,17 @@ const CampaignResults: React.FC<CampaignResultsProps> = ({
             </button>
           </div>
           {agentsLoading ? (
-            <div className="space-y-2">
-              {Array.from({ length: 10 }).map((_, i) => (
-                <div key={i} className="h-10 bg-gray-100 rounded animate-pulse" />
-              ))}
+            <div className="text-center py-8">
+              <div className="inline-flex items-center space-x-2">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-600"></div>
+                <span className="text-gray-600">Generating agent profiles...</span>
+              </div>
+              <p className="text-sm text-gray-500 mt-2">This process typically takes 2-3 minutes. Please wait while we analyze and generate detailed agent profiles.</p>
+              <div className="mt-4">
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="bg-indigo-600 h-2 rounded-full animate-pulse" style={{width: '60%'}}></div>
+                </div>
+              </div>
             </div>
           ) : segments.length === 0 ? (
             <div className="text-center py-8">

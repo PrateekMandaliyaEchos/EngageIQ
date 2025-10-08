@@ -1,4 +1,4 @@
-"""Data Loader Agent - Loads insurance agent population data from CSV files."""
+"""Data Loader Agent - Loads insurance agent population data from various sources."""
 
 import pandas as pd
 from typing import Dict, Any, List
@@ -6,6 +6,7 @@ from pathlib import Path
 
 from src.agents.base_agent import BaseAgent, Message
 from src.core.config import get_settings
+from src.connectors.factory import create_connector
 
 
 class DataLoaderAgent(BaseAgent):
@@ -34,6 +35,11 @@ class DataLoaderAgent(BaseAgent):
         
         self.settings = settings
         self.data_cache = {}  # Cache loaded data
+        
+        # Initialize data connector
+        connector_type = settings.data_connector
+        connector_config = settings.get_connector_config(connector_type)
+        self.connector = create_connector(connector_type, connector_config)
         
     def process(self, message: Message) -> Dict[str, Any]:
         """
@@ -76,9 +82,9 @@ class DataLoaderAgent(BaseAgent):
     
     def _load_agent_persona_data(self) -> pd.DataFrame:
         """
-        Load the unified agent persona CSV file containing all agent data.
+        Load the unified agent persona data from database or CSV file.
 
-        This file now includes all previously separate data sources:
+        This data includes all previously separate data sources:
         - Agent persona information
         - Complaints data
         - Discovery data
@@ -89,33 +95,21 @@ class DataLoaderAgent(BaseAgent):
         Returns:
             DataFrame with complete unified agent data
         """
-        # Get data path from config
-        data_sources = self.settings.data_sources
-        csv_config = self.settings.get_connector_config('csv')
-        data_location = csv_config.get('location', './data')
-
-        # Make path absolute relative to project root
-        if not Path(data_location).is_absolute():
-            # Get project root (parent of src directory)
-            project_root = Path(__file__).parent.parent.parent.parent
-            data_path = project_root / data_location
+        # Check if we're using PostgreSQL connector
+        if hasattr(self.connector, 'get_agents'):
+            # Load from database
+            df = self.connector.get_agents()
         else:
-            data_path = Path(data_location)
-
-        # Handle the actual filename with spaces
-        agent_file = data_path / "Agent_persona.csv"
-
-        if not agent_file.exists():
-            raise FileNotFoundError(f"Agent persona file not found: {agent_file}")
-        
-        # Load CSV with proper handling
-        df = pd.read_csv(
-            agent_file,
-            delimiter=csv_config.get('delimiter', ','),
-            encoding=csv_config.get('encoding', 'utf-8'),
-            skiprows=csv_config.get('skip_rows', 0),
-            low_memory=False
-        )
+            # Fallback to CSV file
+            data_sources = self.settings.data_sources
+            agent_filename = data_sources.get('agent_persona', 'Agent_persona.csv')
+            
+            # Check if file exists
+            if not self.connector.file_exists(agent_filename):
+                raise FileNotFoundError(f"Agent persona file not found: {agent_filename}")
+            
+            # Load CSV using connector
+            df = self.connector.read_csv(agent_filename)
         
         # Cache the data
         self.data_cache['agent_persona'] = df

@@ -82,8 +82,18 @@ class SegmentationAgent(BaseAgent):
             
             # Convert numpy types to native Python types for JSON serialization
             agent_ids = []
-            if 'AGENT_ID' in filtered_agents.columns:
-                agent_ids = [int(x) if pd.notna(x) else None for x in filtered_agents['AGENT_ID'].tolist()]
+            # Try both uppercase and lowercase column names
+            agent_id_col = None
+            for col in ['AGENT_ID', 'agent_id', 'Agent_ID']:
+                if col in filtered_agents.columns:
+                    agent_id_col = col
+                    break
+            
+            if agent_id_col:
+                agent_ids = [int(x) if pd.notna(x) else None for x in filtered_agents[agent_id_col].tolist()]
+                print(f"🎯 Extracted {len(agent_ids)} agent IDs from column '{agent_id_col}'")
+            else:
+                print("❌ No AGENT_ID column found in filtered agents")
             
             # Prepare all filtered agents for profile generation
             all_filtered = []
@@ -101,7 +111,6 @@ class SegmentationAgent(BaseAgent):
                 "success": True,
                 "total_agents": int(len(agent_df)),  # This will now be the full dataset size
                 "filtered_agents": int(len(filtered_agents)),
-                "agent_ids": agent_ids,
                 "criteria_applied": criteria,
                 "statistics": stats,
                 "all_filtered": all_filtered,  # All filtered agents for profile generation
@@ -113,8 +122,7 @@ class SegmentationAgent(BaseAgent):
                 "success": False,
                 "error": f"Segmentation failed: {str(e)}",
                 "total_agents": 0,
-                "filtered_agents": 0,
-                "agent_ids": []
+                "filtered_agents": 0
             }
     
     def _convert_to_dataframe(self, sample_data: List[Dict]) -> pd.DataFrame:
@@ -151,34 +159,65 @@ class SegmentationAgent(BaseAgent):
             Filtered DataFrame
         """
         if df.empty:
+            print("❌ DataFrame is empty")
             return df
+        
+        print(f"🔍 Starting with {len(df)} agents")
+        print(f"📋 Available columns: {list(df.columns)}")
         
         filtered_df = df.copy()
         constraints = criteria.get('constraints', [])
         
-        for constraint in constraints:
+        # Field name mapping from goal parser to actual DataFrame columns
+        field_mapping = {
+            'AUM_SELFREPORTED': 'aum_selfreported',
+            'NPS_SCORE': 'nps_score', 
+            'AGENT_TENURE': 'agent_tenure',
+            'NO_OF_UNIQUE_POLICIES_SOLD_LAST_12_MONTHS': 'no_of_unique_policies_sold_last_12_months',
+            'COMPLAINTS_LAST_12_MONTHS': 'complaints_last_12_months',
+            'PREMIUM_AMOUNT': 'premium_amount',
+            'AGE': 'age',
+            'SEGMENT': 'segment',
+            'Segment': 'segment'  # Add support for mixed case from goal parser
+        }
+        
+        print(f"🎯 Applying {len(constraints)} constraints:")
+        for i, constraint in enumerate(constraints):
             field = constraint.get('field')
             operator = constraint.get('operator')
             value = constraint.get('value')
             
+            print(f"  {i+1}. {field} {operator} {value}")
+            
             if not all([field, operator, value is not None]):
+                print(f"    ❌ Skipping - missing field/operator/value")
                 continue
             
+            # Map uppercase field name to actual DataFrame column name
+            actual_field = field_mapping.get(field, field)
+            
             # Apply the constraint
-            if field in filtered_df.columns:
+            if actual_field in filtered_df.columns:
+                before_count = len(filtered_df)
                 if operator == '>':
-                    filtered_df = filtered_df[filtered_df[field] > value]
+                    filtered_df = filtered_df[filtered_df[actual_field] > value]
                 elif operator == '>=':
-                    filtered_df = filtered_df[filtered_df[field] >= value]
+                    filtered_df = filtered_df[filtered_df[actual_field] >= value]
                 elif operator == '<':
-                    filtered_df = filtered_df[filtered_df[field] < value]
+                    filtered_df = filtered_df[filtered_df[actual_field] < value]
                 elif operator == '<=':
-                    filtered_df = filtered_df[filtered_df[field] <= value]
+                    filtered_df = filtered_df[filtered_df[actual_field] <= value]
                 elif operator == '==':
-                    filtered_df = filtered_df[filtered_df[field] == value]
+                    filtered_df = filtered_df[filtered_df[actual_field] == value]
                 elif operator == '!=':
-                    filtered_df = filtered_df[filtered_df[field] != value]
+                    filtered_df = filtered_df[filtered_df[actual_field] != value]
+                
+                after_count = len(filtered_df)
+                print(f"    ✅ {field} -> {actual_field} {operator} {value}: {before_count} -> {after_count} agents")
+            else:
+                print(f"    ❌ Field '{field}' (mapped to '{actual_field}') not found in DataFrame")
         
+        print(f"🎯 Final result: {len(filtered_df)} agents after filtering")
         return filtered_df
     
     def _generate_segmentation_stats(self, original_df: pd.DataFrame, filtered_df: pd.DataFrame, criteria: Dict[str, Any]) -> Dict[str, Any]:
@@ -201,22 +240,28 @@ class SegmentationAgent(BaseAgent):
         
         # Add field-specific statistics
         key_fields = ['AUM_SELFREPORTED', 'NPS_SCORE', 'AGENT_TENURE']
+        field_mapping = {
+            'AUM_SELFREPORTED': 'aum_selfreported',
+            'NPS_SCORE': 'nps_score', 
+            'AGENT_TENURE': 'agent_tenure'
+        }
         
         for field in key_fields:
-            if field in original_df.columns and field in filtered_df.columns:
+            actual_field = field_mapping.get(field, field)
+            if actual_field in original_df.columns and actual_field in filtered_df.columns:
                 stats[f"{field}_original"] = {
-                    "mean": float(original_df[field].mean()) if pd.notna(original_df[field].mean()) else None,
-                    "median": float(original_df[field].median()) if pd.notna(original_df[field].median()) else None,
-                    "min": float(original_df[field].min()) if pd.notna(original_df[field].min()) else None,
-                    "max": float(original_df[field].max()) if pd.notna(original_df[field].max()) else None
+                    "mean": float(original_df[actual_field].mean()) if pd.notna(original_df[actual_field].mean()) else None,
+                    "median": float(original_df[actual_field].median()) if pd.notna(original_df[actual_field].median()) else None,
+                    "min": float(original_df[actual_field].min()) if pd.notna(original_df[actual_field].min()) else None,
+                    "max": float(original_df[actual_field].max()) if pd.notna(original_df[actual_field].max()) else None
                 }
                 
                 if len(filtered_df) > 0:
                     stats[f"{field}_filtered"] = {
-                        "mean": float(filtered_df[field].mean()) if pd.notna(filtered_df[field].mean()) else None,
-                        "median": float(filtered_df[field].median()) if pd.notna(filtered_df[field].median()) else None,
-                        "min": float(filtered_df[field].min()) if pd.notna(filtered_df[field].min()) else None,
-                        "max": float(filtered_df[field].max()) if pd.notna(filtered_df[field].max()) else None
+                        "mean": float(filtered_df[actual_field].mean()) if pd.notna(filtered_df[actual_field].mean()) else None,
+                        "median": float(filtered_df[actual_field].median()) if pd.notna(filtered_df[actual_field].median()) else None,
+                        "min": float(filtered_df[actual_field].min()) if pd.notna(filtered_df[actual_field].min()) else None,
+                        "max": float(filtered_df[actual_field].max()) if pd.notna(filtered_df[actual_field].max()) else None
                     }
         
         return stats

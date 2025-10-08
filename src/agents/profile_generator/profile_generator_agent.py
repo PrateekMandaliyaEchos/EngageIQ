@@ -93,8 +93,8 @@ class ProfileGeneratorAgent(BaseAgent):
             return {
                 "success": True,
                 "segment_summary": {
-                    "total_agents": len(agent_df),
-                    "agent_ids": agent_ids,
+                    "total_agents": segmentation_results.get('total_agents', len(agent_df)),
+                    "filtered_agents": len(agent_df),
                     "objective": criteria.get('objective', 'unknown'),
                     "criteria_applied": criteria.get('constraints', [])
                 },
@@ -130,8 +130,8 @@ class ProfileGeneratorAgent(BaseAgent):
         stats = {}
         
         # Financial metrics
-        if 'AUM_SELFREPORTED' in df.columns:
-            aum_data = pd.to_numeric(df['AUM_SELFREPORTED'], errors='coerce')
+        if 'aum_selfreported' in df.columns:
+            aum_data = pd.to_numeric(df['aum_selfreported'], errors='coerce')
             stats['aum'] = {
                 "count": int(aum_data.count()),
                 "mean": float(aum_data.mean()) if not aum_data.empty and pd.notna(aum_data.mean()) else 0,
@@ -144,8 +144,8 @@ class ProfileGeneratorAgent(BaseAgent):
             }
         
         # Satisfaction metrics
-        if 'NPS_SCORE' in df.columns:
-            nps_data = pd.to_numeric(df['NPS_SCORE'], errors='coerce')
+        if 'nps_score' in df.columns:
+            nps_data = pd.to_numeric(df['nps_score'], errors='coerce')
             stats['nps'] = {
                 "count": int(nps_data.count()),
                 "mean": float(nps_data.mean()) if not nps_data.empty and pd.notna(nps_data.mean()) else 0,
@@ -157,8 +157,8 @@ class ProfileGeneratorAgent(BaseAgent):
             }
         
         # Tenure metrics
-        if 'AGENT_TENURE' in df.columns:
-            tenure_data = pd.to_numeric(df['AGENT_TENURE'], errors='coerce')
+        if 'agent_tenure' in df.columns:
+            tenure_data = pd.to_numeric(df['agent_tenure'], errors='coerce')
             stats['tenure'] = {
                 "count": int(tenure_data.count()),
                 "mean": float(tenure_data.mean()) if not tenure_data.empty and pd.notna(tenure_data.mean()) else 0,
@@ -173,8 +173,8 @@ class ProfileGeneratorAgent(BaseAgent):
             }
         
         # Performance metrics
-        if 'NO_OF_UNIQUE_POLICIES_SOLD_LAST_12_MONTHS' in df.columns:
-            sales_data = pd.to_numeric(df['NO_OF_UNIQUE_POLICIES_SOLD_LAST_12_MONTHS'], errors='coerce')
+        if 'no_of_unique_policies_sold_last_12_months' in df.columns:
+            sales_data = pd.to_numeric(df['no_of_unique_policies_sold_last_12_months'], errors='coerce')
             stats['sales_performance'] = {
                 "count": int(sales_data.count()),
                 "mean": float(sales_data.mean()) if not sales_data.empty and pd.notna(sales_data.mean()) else 0,
@@ -230,8 +230,8 @@ class ProfileGeneratorAgent(BaseAgent):
             insights["segment_characteristics"].append(f"Segment size: {len(df)} agents")
             
             # AUM insights
-            if 'AUM_SELFREPORTED' in df.columns:
-                avg_aum = df['AUM_SELFREPORTED'].mean()
+            if 'aum_selfreported' in df.columns:
+                avg_aum = df['aum_selfreported'].mean()
                 insights["segment_characteristics"].append(f"Average AUM: ${avg_aum:,.0f}")
                 
                 if avg_aum > 5000000:
@@ -242,8 +242,8 @@ class ProfileGeneratorAgent(BaseAgent):
                     insights["key_findings"].append("Standard value agent segment")
             
             # NPS insights
-            if 'NPS_SCORE' in df.columns:
-                avg_nps = df['NPS_SCORE'].mean()
+            if 'nps_score' in df.columns:
+                avg_nps = df['nps_score'].mean()
                 insights["segment_characteristics"].append(f"Average NPS: {avg_nps:.1f}")
                 
                 if avg_nps >= 8:
@@ -257,8 +257,8 @@ class ProfileGeneratorAgent(BaseAgent):
                     insights["opportunities"].append("Urgent intervention needed for retention")
             
             # Tenure insights
-            if 'AGENT_TENURE' in df.columns:
-                avg_tenure = df['AGENT_TENURE'].mean()
+            if 'agent_tenure' in df.columns:
+                avg_tenure = df['agent_tenure'].mean()
                 insights["segment_characteristics"].append(f"Average tenure: {avg_tenure:.1f} years")
                 
                 if avg_tenure >= 5:
@@ -344,19 +344,20 @@ class ProfileGeneratorAgent(BaseAgent):
         profiles = []
         
         for _, agent in df.iterrows():
+            # Use lowercase column names to match the database schema
             profile = {
-                "agent_id": agent.get('AGENT_ID', 'Unknown'),
-                "name": f"{agent.get('AGENT_FIRST_NAME', '')} {agent.get('AGENT_LAST_NAME', '')}".strip(),
-                "segment": agent.get('Segment', 'Unknown'),
-                "aum": float(agent.get('AUM_SELFREPORTED', 0)) if pd.notna(agent.get('AUM_SELFREPORTED')) else 0,
-                "nps_score": float(agent.get('NPS_SCORE', 0)) if pd.notna(agent.get('NPS_SCORE')) else 0,
-                "tenure": float(agent.get('AGENT_TENURE', 0)) if pd.notna(agent.get('AGENT_TENURE')) else 0,
-                "policies_sold": int(agent.get('NO_OF_UNIQUE_POLICIES_SOLD_LAST_12_MONTHS', 0)) if pd.notna(agent.get('NO_OF_UNIQUE_POLICIES_SOLD_LAST_12_MONTHS')) else 0,
-                "age": int(agent.get('Age', 0)) if pd.notna(agent.get('Age')) else 0,
-                "city": agent.get('CITY', 'Unknown'),
-                "education": agent.get('EDUCATION', 'Unknown'),
-                "premium_amount": float(agent.get('PREMIUM_AMOUNT', 0)) if pd.notna(agent.get('PREMIUM_AMOUNT')) else 0,
-                "nps_feedback": agent.get('NPS_FEEDBACK', 'No feedback available')
+                "agent_id": str(agent.get('agent_id', 'Unknown')),
+                "name": f"{agent.get('first_name', '')} {agent.get('last_name', '')}".strip(),
+                "segment": agent.get('segment', 'Unknown'),
+                "aum": float(agent.get('aum_selfreported', 0)) if pd.notna(agent.get('aum_selfreported')) else 0,
+                "nps_score": float(agent.get('nps_score', 0)) if pd.notna(agent.get('nps_score')) else 0,
+                "tenure": float(agent.get('agent_tenure', 0)) if pd.notna(agent.get('agent_tenure')) else 0,
+                "policies_sold": int(agent.get('no_of_unique_policies_sold_last_12_months', 0)) if pd.notna(agent.get('no_of_unique_policies_sold_last_12_months')) else 0,
+                "age": int(agent.get('age', 0)) if pd.notna(agent.get('age')) else 0,
+                "city": agent.get('city', 'Unknown'),
+                "education": agent.get('education', 'Unknown'),
+                "premium_amount": float(agent.get('premium_amount', 0)) if pd.notna(agent.get('premium_amount')) else 0,
+                "nps_feedback": agent.get('nps_feedback', 'No feedback available')
             }
             profiles.append(profile)
         
@@ -431,11 +432,11 @@ class ProfileGeneratorAgent(BaseAgent):
         """
         segments_breakdown = {}
 
-        if 'Segment' not in df.columns or df.empty:
+        if 'segment' not in df.columns or df.empty:
             return segments_breakdown
 
         # Group by Segment
-        for segment_name, segment_df in df.groupby('Segment'):
+        for segment_name, segment_df in df.groupby('segment'):
             if segment_df.empty:
                 continue
 
@@ -443,7 +444,6 @@ class ProfileGeneratorAgent(BaseAgent):
                 "segment_name": segment_name,
                 "agent_count": len(segment_df),
                 "percentage_of_total": float(len(segment_df) / len(df) * 100) if len(df) > 0 else 0,
-                "agent_ids": [int(x) for x in segment_df['AGENT_ID'].tolist() if pd.notna(x)],
                 "statistics": {},
                 "insights": []
             }
@@ -452,8 +452,8 @@ class ProfileGeneratorAgent(BaseAgent):
             segment_stats = {}
 
             # AUM statistics
-            if 'AUM_SELFREPORTED' in segment_df.columns:
-                aum_data = pd.to_numeric(segment_df['AUM_SELFREPORTED'], errors='coerce')
+            if 'aum_selfreported' in segment_df.columns:
+                aum_data = pd.to_numeric(segment_df['aum_selfreported'], errors='coerce')
                 segment_stats['aum'] = {
                     "mean": float(aum_data.mean()) if not aum_data.empty and pd.notna(aum_data.mean()) else 0,
                     "median": float(aum_data.median()) if not aum_data.empty and pd.notna(aum_data.median()) else 0,
@@ -462,8 +462,8 @@ class ProfileGeneratorAgent(BaseAgent):
                 }
 
             # NPS statistics
-            if 'NPS_SCORE' in segment_df.columns:
-                nps_data = pd.to_numeric(segment_df['NPS_SCORE'], errors='coerce')
+            if 'nps_score' in segment_df.columns:
+                nps_data = pd.to_numeric(segment_df['nps_score'], errors='coerce')
                 segment_stats['nps'] = {
                     "mean": float(nps_data.mean()) if not nps_data.empty and pd.notna(nps_data.mean()) else 0,
                     "median": float(nps_data.median()) if not nps_data.empty and pd.notna(nps_data.median()) else 0,
@@ -473,8 +473,8 @@ class ProfileGeneratorAgent(BaseAgent):
                 }
 
             # Tenure statistics
-            if 'AGENT_TENURE' in segment_df.columns:
-                tenure_data = pd.to_numeric(segment_df['AGENT_TENURE'], errors='coerce')
+            if 'agent_tenure' in segment_df.columns:
+                tenure_data = pd.to_numeric(segment_df['agent_tenure'], errors='coerce')
                 segment_stats['tenure'] = {
                     "mean": float(tenure_data.mean()) if not tenure_data.empty and pd.notna(tenure_data.mean()) else 0,
                     "median": float(tenure_data.median()) if not tenure_data.empty and pd.notna(tenure_data.median()) else 0,
@@ -483,8 +483,8 @@ class ProfileGeneratorAgent(BaseAgent):
                 }
 
             # Sales performance
-            if 'NO_OF_UNIQUE_POLICIES_SOLD_LAST_12_MONTHS' in segment_df.columns:
-                sales_data = pd.to_numeric(segment_df['NO_OF_UNIQUE_POLICIES_SOLD_LAST_12_MONTHS'], errors='coerce')
+            if 'no_of_unique_policies_sold_last_12_months' in segment_df.columns:
+                sales_data = pd.to_numeric(segment_df['no_of_unique_policies_sold_last_12_months'], errors='coerce')
                 segment_stats['sales_performance'] = {
                     "mean": float(sales_data.mean()) if not sales_data.empty and pd.notna(sales_data.mean()) else 0,
                     "total_policies": int(sales_data.sum()) if not sales_data.empty and pd.notna(sales_data.sum()) else 0

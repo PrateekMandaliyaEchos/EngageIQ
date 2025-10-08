@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Dict, Any
 
 from src.core.config import get_settings
+from src.connectors.factory import create_connector
 
 router = APIRouter()
 
@@ -13,7 +14,7 @@ router = APIRouter()
 @router.get("/segment-counts")
 async def get_segment_counts():
     """
-    Get the count of agents in each segment from Agent_persona.csv.
+    Get the count of agents in each segment from the database.
     
     Returns:
         JSON response with segment names as keys and counts as values,
@@ -32,40 +33,39 @@ async def get_segment_counts():
     ```
     """
     try:
-        # Get data path from settings
+        # Get settings and create connector
         settings = get_settings()
-        data_location = settings._config.get('connectors', {}).get('csv', {}).get('location', './data')
-        agent_file = Path(data_location) / "Agent_persona.csv"
+        connector_type = settings.data_connector
+        connector_config = settings.get_connector_config(connector_type)
+        connector = create_connector(connector_type, connector_config)
         
-        # Check if file exists
-        if not agent_file.exists():
+        # Get agents from database
+        agents = connector.get_agents()
+        
+        if agents is None or len(agents) == 0:
             raise HTTPException(
                 status_code=404,
-                detail=f"Agent_persona.csv file not found at {agent_file}"
+                detail="No agent data found in database"
             )
         
-        # Read CSV with proper error handling
-        try:
-            df = pd.read_csv(
-                agent_file,
-                low_memory=False,
-                usecols=['Segment']  # Only read the Segment column for efficiency
-            )
-        except Exception as csv_error:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Error reading CSV file: {str(csv_error)}"
-            )
+        # Convert to DataFrame for easier processing
+        df = pd.DataFrame(agents)
         
-        # Check if Segment column exists
-        if 'Segment' not in df.columns:
+        # Check if segment column exists (handle both cases)
+        segment_col = None
+        for col in ['segment', 'Segment']:
+            if col in df.columns:
+                segment_col = col
+                break
+        
+        if segment_col is None:
             raise HTTPException(
                 status_code=400,
-                detail="Segment column not found in Agent_persona.csv"
+                detail="Segment column not found in agent data"
             )
         
         # Count agents by segment
-        segment_counts = df['Segment'].value_counts().to_dict()
+        segment_counts = df[segment_col].value_counts().to_dict()
         
         # Convert any NaN values to 0 and ensure all values are integers
         segment_counts = {str(k): int(v) for k, v in segment_counts.items() if pd.notna(k)}
@@ -90,14 +90,14 @@ async def get_segment_counts():
 @router.get("/dataset-summary")
 async def get_dataset_summary():
     """
-    Get a comprehensive summary of the Agent_persona.csv dataset.
+    Get a comprehensive summary of the agent dataset from the database.
     
     Returns:
         JSON response with dataset statistics including:
         - Total agents
         - Segment distribution
         - Column information
-        - File metadata
+        - Database metadata
         
     Example Response:
     ```json
@@ -108,52 +108,51 @@ async def get_dataset_summary():
             "Independent Agents": 1500,
             "Comfortable retirees": 800
         },
-        "file_info": {
-            "file_size_mb": 12.5,
-            "last_modified": "2025-01-01T12:00:00Z"
+        "database_info": {
+            "connector_type": "postgresql",
+            "data_source": "database"
         }
     }
     ```
     """
     try:
-        # Get data path from settings
+        # Get settings and create connector
         settings = get_settings()
-        data_location = settings._config.get('connectors', {}).get('csv', {}).get('location', './data')
-        agent_file = Path(data_location) / "Agent_persona.csv"
+        connector_type = settings.data_connector
+        connector_config = settings.get_connector_config(connector_type)
+        connector = create_connector(connector_type, connector_config)
         
-        # Check if file exists
-        if not agent_file.exists():
+        # Get agents from database
+        agents = connector.get_agents()
+        
+        if agents is None or len(agents) == 0:
             raise HTTPException(
                 status_code=404,
-                detail=f"Agent_persona.csv file not found at {agent_file}"
+                detail="No agent data found in database"
             )
         
-        # Read CSV with proper error handling
-        try:
-            df = pd.read_csv(agent_file, low_memory=False)
-        except Exception as csv_error:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Error reading CSV file: {str(csv_error)}"
-            )
+        # Convert to DataFrame for easier processing
+        df = pd.DataFrame(agents)
         
-        # Get segment counts if Segment column exists
+        # Get segment counts if segment column exists (handle both cases)
         segment_counts = {}
-        if 'Segment' in df.columns:
-            segment_counts = df['Segment'].value_counts().to_dict()
-            segment_counts = {str(k): int(v) for k, v in segment_counts.items() if pd.notna(k)}
+        segment_col = None
+        for col in ['segment', 'Segment']:
+            if col in df.columns:
+                segment_col = col
+                break
         
-        # Get file metadata
-        file_stat = agent_file.stat()
-        file_size_mb = round(file_stat.st_size / (1024 * 1024), 2)
+        if segment_col:
+            segment_counts = df[segment_col].value_counts().to_dict()
+            segment_counts = {str(k): int(v) for k, v in segment_counts.items() if pd.notna(k)}
         
         return {
             "total_agents": len(df),
             "total_columns": len(df.columns),
             "segment_counts": segment_counts,
-            "file_info": {
-                "file_size_mb": file_size_mb,
-                "last_modified": pd.Timestamp.fromtimestamp(file_stat.st_mtime).isoformat()
+            "database_info": {
+                "connector_type": connector_type,
+                "data_source": "database"
             },
             "columns": list(df.columns)
         }
